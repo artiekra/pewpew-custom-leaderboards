@@ -9,6 +9,7 @@ from loguru import logger
 
 import database.connect as dbc
 import database.interact as dbi
+import database.table as dbt
 
 logger = logger.opt(colors=True)
 
@@ -29,8 +30,7 @@ def main(config: dict) -> None:
 
     session = dbc.main(config["database"])
 
-    test_score = dbc.Score(
-        timestamp=datetime.now(),
+    test_score = dbt.Score(
         era=0,
         username1="test",
         username2="test2",

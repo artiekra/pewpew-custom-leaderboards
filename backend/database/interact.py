@@ -7,7 +7,8 @@ from loguru import logger
 from sqlalchemy import insert
 from pydantic import BaseModel
 
-from database.connect import Score
+from database.table import Score
+# import database.table as dbt
 
 logger = logger.opt(colors=True)
 

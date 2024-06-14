@@ -1,7 +1,7 @@
 """Connecting/setting up the database (SQLite)"""
 
 from sqlalchemy import create_engine
-from sqlalchemy.orm import relationship, sessionmaker
+from sqlalchemy.orm import sessionmaker
 
 from database.table import Base
 
