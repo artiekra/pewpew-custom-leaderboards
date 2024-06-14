@@ -1,5 +1,6 @@
 """Table classes for the database"""
 
+from sqlalchemy.sql import text
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, ForeignKey
@@ -19,7 +20,7 @@ class Score(Base):
   __tablename__ = "game_data"
 
   id = Column(Integer, primary_key=True, autoincrement=True)
-  timestamp = Column(Integer)  # unix timestamp
+  timestamp = Column(Integer, default=text("strftime('%s', 'now')"))  # unix timestamp
   era = Column(Integer)
   username1 = Column(String)
   username2 = Column(String)
