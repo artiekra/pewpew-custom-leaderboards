@@ -7,12 +7,10 @@ from loguru import logger
 from sqlalchemy import insert
 from pydantic import BaseModel
 
-import database.table as dbt
-
 logger = logger.opt(colors=True)
 
 
-def insert_score(session, score: dbt.Score) -> None:
+def insert_score(session, score) -> None:
     """Insert data about a certain score into "score" table"""
     logger.debug("Adding a score: <w>{}</>", repr(score))
 
@@ -20,7 +18,7 @@ def insert_score(session, score: dbt.Score) -> None:
     session.commit()
 
 
-def insert_level(session, level: dbt.Level) -> None:
+def insert_level(session, level) -> None:
     """Insert data about a certain level into "level" table"""
     logger.debug("Adding a level: <w>{}</>", repr(level))
 

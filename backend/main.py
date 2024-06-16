@@ -9,7 +9,6 @@ from loguru import logger
 
 import database.connect as dbc
 import database.interact as dbi
-import database.table as dbt
 
 logger = logger.opt(colors=True)
 
@@ -31,22 +30,21 @@ def main(config: dict) -> None:
     session = dbc.main(config["database"])
 
     # ---------- TESTING ----------
-    test_score = dbt.Score(
-        era=0,
-        username1="test",
-        username2="test2",
-        level_id=0,
-        score=0,
-        country="test",
-        platform="test",
-        mode=0,
-    )
+    test_score = {
+        "era": 0,
+        "username1": "test",
+        "username2": "test2",
+        "level_id": 0,
+        "score": 0,
+        "country": "test",
+        "platform": "test",
+        "mode": 0
+    }
     dbi.insert_score(session, test_score)
 
-    test_level = dbt.Level(
-        raw_name="#ffffff80test",
-        name="test"
-    )
+    test_level = {
+        "name": "test"
+    }
     dbi.insert_level(session, test_level)
 
 
