@@ -17,7 +17,7 @@ class Level(Base):
 
 
 class Score(Base):
-  __tablename__ = "game_data"
+  __tablename__ = "score"
 
   id = Column(Integer, primary_key=True, autoincrement=True)
   timestamp = Column(Integer, default=text("strftime('%s', 'now')"))  # unix timestamp

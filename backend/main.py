@@ -30,6 +30,7 @@ def main(config: dict) -> None:
 
     session = dbc.main(config["database"])
 
+    # ---------- TESTING ----------
     test_score = dbt.Score(
         era=0,
         username1="test",
@@ -41,6 +42,12 @@ def main(config: dict) -> None:
         mode=0,
     )
     dbi.insert_score(session, test_score)
+
+    test_level = dbt.Level(
+        raw_name="#ffffff80test",
+        name="test"
+    )
+    dbi.insert_level(session, test_level)
 
 
 if __name__ == "__main__":
