@@ -12,9 +12,11 @@ from fastapi import FastAPI
 import database.connect as dbc
 import database.interact as dbi
 from parser.parse import parse_score
+from api.metadata import API_TAGS_METADATA, API_DESCRIPTION
 
-import api.update
 import api.scores
+import api.cached
+import api.update
 
 logger.remove(0)
 logger.add(sys.stderr, level="TRACE")
@@ -36,9 +38,13 @@ def get_app(config: dict) -> FastAPI:
 
     session = dbc.main(config["database"])
 
-    app = FastAPI()
-    app.include_router(api.update.router)
+    app = FastAPI(title="PewPew Community Portal", description=API_DESCRIPTION,
+      openapi_tags=API_TAGS_METADATA, license_info={
+        "name": "Apache 2.0"
+    })
     app.include_router(api.scores.router)
+    app.include_router(api.cached.router)
+    app.include_router(api.update.router)
 
     return app
 
