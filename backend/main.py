@@ -11,11 +11,11 @@ from fastapi import FastAPI
 
 import database.connect as dbc
 import database.interact as dbi
-from parser.parse import parse_score
 from api.metadata import API_TAGS_METADATA, API_DESCRIPTION
 
 import api.scores
 import api.cached
+import api.parse
 import api.update
 
 logger.remove(0)
@@ -44,6 +44,7 @@ def get_app(config: dict) -> FastAPI:
     })
     app.include_router(api.scores.router)
     app.include_router(api.cached.router)
+    app.include_router(api.parse.router, prefix="/parse")
     app.include_router(api.update.router)
 
     return app

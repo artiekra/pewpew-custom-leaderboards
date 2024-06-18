@@ -18,17 +18,6 @@ def insert_score():
     return {"error": "Hi!"}
 
 
-# [TODO: implement separate api logger class]
-@router.post("/parse_score/", tags=["update"])
-def parse_score(message: str):
-    """Parse score message from #scores-feed"""
-    logger.debug("Got POST request to parse <w>{}</>", message)
-
-    parsed = parser.parse.parse_score(message)
-
-    return {"responce": parsed}
-
-
 @router.delete("/delete_score/", tags=["update"])
 def delete_score():
     """Delete a particular score from the database"""

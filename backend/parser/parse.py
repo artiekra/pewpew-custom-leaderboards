@@ -21,14 +21,23 @@ def load_regex(path: str):
     return rx
 
 
+def apply_regex_raw(msg: str):
+    """Apply regex without any post-processing done"""
+    logger.trace("Applying regex (raw) to <w>{}</>", msg)
+
+    rx = load_regex("parser/regex.txt")
+    msg_split = rx.findall(msg)
+    logger.debug("Regex's reply: <w>{}</>", msg_split)
+
+    return msg_split
+
+
 def apply_regex(msg: str) -> [list[str], int, [str, str]]:
     """Apply #scores-feed regex to the string, extracting
     names (usernames / level name), scores and raw metadata"""
     logger.trace("Applying regex to <w>{}</>", msg)
 
-    rx = load_regex("parser/regex.txt")
-    msg_split = rx.findall(msg)
-    logger.debug("Regex's reply: <w>{}</>", msg_split)
+    msg_split = apply_regex_raw(msg)
 
     names, score, metadata = [], 0, ""
     for group in msg_split:
