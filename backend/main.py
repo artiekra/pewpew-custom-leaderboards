@@ -50,8 +50,6 @@ def main(config: dict) -> None:
 
     msg = input()
     parsed = parse_score(msg)
-
-    print(parsed)
     dbi.insert_score(session, parsed)
 
 

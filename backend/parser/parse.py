@@ -54,6 +54,16 @@ def parse_contents(msg: str) -> dict|None:
     logger.debug("Got names: <m>{}</>, score <m>{}</>, metadata <m>{}</>",
                  names, score, raw_metadata)
 
+    usernames, level = names[:-1], names[-1]
+    if len(usernames) == 2:
+        p1, p2 = usernames
+        mode = 1
+    else:
+        p1, p2 = usernames[0], None
+        mode = 0
+
+    country, platform = raw_metadata
+
     result = {
         "username1": p1,
         "username2": p2,
@@ -85,5 +95,6 @@ def parse_score(raw: str) -> dict|None:
         "era": era,
     }
 
-    result = result.update(data)
+    result.update(data)
+    logger.debug("Parsing result: <w>{}</>", result)
     return result
