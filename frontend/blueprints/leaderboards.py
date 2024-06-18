@@ -19,4 +19,29 @@ def scores_feed():
     logger.log("FRONT", "Front-end requested: <m>{}</>",
         "/scores-feed")
 
-    return render_template("scores-feed.htm")
+    scores = [
+        {
+          "timestamp": 0,
+          "era": 0,
+          "username1": "string",
+          "username2": "string",
+          "level": "string",
+          "score": 0,
+          "country": "string",
+          "platform": "string",
+          "mode": 0
+        },
+        {
+          "timestamp": 1,
+          "era": 0,
+          "username1": "stringss",
+          "username2": "string",
+          "level": "string",
+          "score": 0,
+          "country": "string",
+          "platform": "string",
+          "mode": 0
+        }
+    ]
+
+    return render_template("scores-feed.htm", scores=scores)
