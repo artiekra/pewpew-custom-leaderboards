@@ -25,7 +25,7 @@ def apply_regex(msg: str) -> [list[str], int, [str, str]]:
     logger.trace("Applying regex to <w>{}</>", msg)
 
     rx = load_regex("parser/regex.txt")
-    msg_split = re.findall(rx, msg)
+    msg_split = rx.findall(msg)
     logger.debug("Regex's reply: <w>{}</>", msg_split)
 
     names, score, metadata = [], 0, ""
