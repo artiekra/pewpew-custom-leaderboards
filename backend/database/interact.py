@@ -14,6 +14,6 @@ def insert_score(con: sqlite3.Connection, score) -> None:
     logger.debug("Adding a score: <w>{}</>", repr(score))
 
     cur = con.cursor()
-    cur.execute(QUERIES["insert_score"], score)
+    cur.execute(QUERIES["insert_score"], dict(score))
 
     con.commit()

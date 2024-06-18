@@ -24,7 +24,7 @@ def main(db_file: str) -> sqlite3.Connection:
     create neccesarry tables"""
     logger.debug("Connecting to <m>{}</>", db_file)
 
-    con = sqlite3.connect(db_file)
+    con = sqlite3.connect(db_file, check_same_thread=False)
     print(type(con))
 
     create_tables(con)

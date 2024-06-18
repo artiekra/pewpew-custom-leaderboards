@@ -13,10 +13,10 @@ import database.connect as dbc
 import database.interact as dbi
 from api.metadata import API_TAGS_METADATA, API_DESCRIPTION
 
-import api.scores
-import api.cached
+from api.scores import get_router as get_router_scores
+from api.cached import get_router as get_router_cached
+from api.update import get_router as get_router_update
 import api.parse
-import api.update
 
 logger.remove(0)
 logger.add(sys.stderr, level="TRACE")
@@ -36,7 +36,7 @@ def get_app(config: dict) -> FastAPI:
     logger.debug("Registering signal handler for <y>{}</>", "signal.SIGINT")
     signal.signal(signal.SIGINT, sigint_handler)
 
-    session = dbc.main(config["database"])
+    db_con = dbc.main(config["database"])
 
     # custom logging (loguru) method for API-specific stuff
     # debug 10, info 20, error 40
@@ -46,10 +46,10 @@ def get_app(config: dict) -> FastAPI:
       openapi_tags=API_TAGS_METADATA, license_info={
         "name": "Apache 2.0"
     })
-    app.include_router(api.scores.router)
-    app.include_router(api.cached.router)
+    app.include_router(get_router_scores(db_con))
+    app.include_router(get_router_cached(db_con))
     app.include_router(api.parse.router, prefix="/parse")
-    app.include_router(api.update.router)
+    app.include_router(get_router_update(db_con))
 
     return app
 
