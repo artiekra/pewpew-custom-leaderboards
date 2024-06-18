@@ -12,7 +12,7 @@ logger = logger.opt(colors=True)
 router = APIRouter()
 
 
-@router.put("/insert_score/", tags=["update"])
+@router.post("/insert_score/", tags=["update"])
 def insert_score():
     """Insert a single score into the database"""
     return {"error": "Hi!"}
