@@ -10,6 +10,6 @@ router = APIRouter()
 
 
 @router.get("/get_player/", tags=["cached"])
-async def get_player():
+def get_player():
     """Get cached data on player for leaderboards"""
     return {"error": "Hi!"}
