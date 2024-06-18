@@ -4,28 +4,18 @@ import re
 
 from loguru import logger
 
-from parser.metadata import parse_platform
+from .metadata import parse_platform
 
 logger = logger.opt(colors=True)
-
-
-def load_regex(path: str):
-    """Load regex from the file and compile it"""
-    logger.trace("Loading regex from <m>{}</>", path)
-
-    # [NOTE: regex was simplyfied.. consider not reading
-    #  from the file anymore?]
-    with open(path, "r", encoding="UTF-8") as file:
-        rx = re.compile(file.read())
-
-    return rx
 
 
 def apply_regex_raw(msg: str):
     """Apply regex without any post-processing done"""
     logger.trace("Applying regex (raw) to <w>{}</>", msg)
 
-    rx = load_regex("parser/regex.txt")
+    regex_string = r"(`[^`]*`)|(\([^\(]*\))|(\d+)|\S+"
+    rx = re.compile(regex_string)
+
     msg_split = rx.findall(msg)
     logger.debug("Regex's reply: <w>{}</>", msg_split)
 

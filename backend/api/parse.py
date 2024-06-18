@@ -5,8 +5,9 @@ from typing import Union
 from loguru import logger
 from fastapi import APIRouter
 
-import parser.parse
-import parser.metadata
+from .parser.parse import apply_regex_raw
+from .parser.parse import parse_score as parser_parse_score
+from .parser.metadata import parse_platform as parser_parse_platform
 
 logger = logger.opt(colors=True)
 
@@ -20,7 +21,7 @@ def parse_score(message: str):
     Pass JUST the message WITH formatting IN MARKDOWN."""
     logger.log("API", "Got POST request to parse <w>{}</>", message)
 
-    parsed = parser.parse.parse_score(message)
+    parsed = parser_parse_score(message)
 
     return {"responce": parsed}
 
@@ -32,18 +33,18 @@ def apply_regex_to_score(message: str):
     Pass JUST the message WITH formatting IN MARKDOWN."""
     logger.log("API", "Got POST request to apply regex: <w>{}</>", message)
 
-    parsed = parser.parse.apply_regex_raw(message)
+    parsed = apply_regex_raw(message)
 
     return {"responce": parsed}
 
 
 @router.post("/parse_platform/", tags=["parse"])
-def apply_regex_to_score(message: str):
+def parse_platform(message: str):
     """Convert emoji/text into one of the platforms.
     a android, i ios, w windows, b web, u/e unknown
     (e - uknown by parser, u - uknown by #scores-feed)"""
     logger.log("API", "Got POST request to parse platform: <m>{}</>", message)
 
-    parsed = parser.metadata.parse_platform(message)
+    parsed = parser_parse_platform(message)
 
     return {"responce": parsed}

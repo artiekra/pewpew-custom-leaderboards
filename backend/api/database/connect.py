@@ -2,9 +2,9 @@
 
 import sqlite3
 
-from database.query import QUERIES
-
 from loguru import logger
+
+from .query import QUERIES
 
 logger = logger.opt(colors=True)
 

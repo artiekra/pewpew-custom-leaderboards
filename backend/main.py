@@ -9,14 +9,13 @@ import uvicorn
 from loguru import logger
 from fastapi import FastAPI
 
-import database.connect as dbc
-import database.interact as dbi
-from api.metadata import API_TAGS_METADATA, API_DESCRIPTION
+from .api.database.connect import main as db_connect
+from .api.metadata import API_TAGS_METADATA, API_DESCRIPTION
 
-from api.scores import get_router as get_router_scores
-from api.cached import get_router as get_router_cached
-from api.update import get_router as get_router_update
-import api.parse
+from .api.scores import get_router as get_router_scores
+from .api.cached import get_router as get_router_cached
+from .api.update import get_router as get_router_update
+from .api.parse import router as api_parse_router
 
 logger.remove(0)
 logger.add(sys.stderr, level="TRACE")
@@ -36,7 +35,7 @@ def get_app(config: dict) -> FastAPI:
     logger.debug("Registering signal handler for <y>{}</>", "signal.SIGINT")
     signal.signal(signal.SIGINT, sigint_handler)
 
-    db_con = dbc.main(config["database"])
+    db_con = db_connect(config["database"])
 
     # custom logging (loguru) method for API-specific stuff
     # debug 10, info 20, error 40
@@ -48,7 +47,7 @@ def get_app(config: dict) -> FastAPI:
     })
     # app.include_router(get_router_scores(db_con))
     # app.include_router(get_router_cached(db_con))
-    app.include_router(api.parse.router, prefix="/parse")
+    app.include_router(api_parse_router, prefix="/parse")
     app.include_router(get_router_update(db_con))
 
     return app
