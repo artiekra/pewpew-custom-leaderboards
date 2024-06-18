@@ -46,8 +46,8 @@ def get_app(config: dict) -> FastAPI:
       openapi_tags=API_TAGS_METADATA, license_info={
         "name": "Apache 2.0"
     })
-    app.include_router(get_router_scores(db_con))
-    app.include_router(get_router_cached(db_con))
+    # app.include_router(get_router_scores(db_con))
+    # app.include_router(get_router_cached(db_con))
     app.include_router(api.parse.router, prefix="/parse")
     app.include_router(get_router_update(db_con))
 

@@ -41,9 +41,9 @@ def get_router(con: sqlite3.Connection) -> APIRouter:
 
         database.interact.insert_score(con, score)
 
-    @router.delete("/delete_score/", tags=["update"])
-    def delete_score():
-        """Delete a particular score from the database"""
-        return {"error": "Hi!"}
+    # @router.delete("/delete_score/", tags=["update"])
+    # def delete_score():
+    #     """Delete a particular score from the database"""
+    #     return {"error": "Hi!"}
 
     return router
