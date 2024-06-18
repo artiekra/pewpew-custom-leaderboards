@@ -38,6 +38,10 @@ def get_app(config: dict) -> FastAPI:
 
     session = dbc.main(config["database"])
 
+    # custom logging (loguru) method for API-specific stuff
+    # debug 10, info 20, error 40
+    logger.level("API", no=10, color="<fg #ff7100>")
+
     app = FastAPI(title="PewPew Community Portal", description=API_DESCRIPTION,
       openapi_tags=API_TAGS_METADATA, license_info={
         "name": "Apache 2.0"
