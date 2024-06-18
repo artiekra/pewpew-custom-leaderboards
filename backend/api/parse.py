@@ -14,7 +14,6 @@ logger = logger.opt(colors=True)
 router = APIRouter()
 
 
-# [TODO: implement separate api logger class]
 @router.post("/parse_score/", tags=["parse"])
 def parse_score(message: str):
     """Parse score message from #scores-feed.

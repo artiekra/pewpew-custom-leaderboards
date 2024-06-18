@@ -34,7 +34,7 @@ def get_app(config: dict) -> FastAPI:
         TrustedHostMiddleware, allowed_hosts=["localhost"] 
     )
 
-    # app.include_router(get_router_scores(db_con))
+    app.include_router(get_router_scores(db_con))
     # app.include_router(get_router_cached(db_con))
     app.include_router(api_parse_router, prefix="/parse")
     app.include_router(get_router_update(db_con))

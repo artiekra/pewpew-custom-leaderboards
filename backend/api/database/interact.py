@@ -29,3 +29,14 @@ def db_delete_score(con: sqlite3.Connection, id: int) -> None:
     cur.execute(QUERIES["remove_score"], {"id": id})
 
     con.commit()
+
+
+def db_get_all(con: sqlite3.Connection) -> list[tuple]:
+    """Get all available in the database data"""
+    logger.debug("Getting everything from the database..")
+
+    cur = con.cursor()
+    cur.execute(QUERIES["get_all"])
+    result = cur.fetchall()
+
+    return result
