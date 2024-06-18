@@ -74,8 +74,11 @@ def parse_contents(msg: str) -> dict|None:
         p1, p2 = usernames[0], None
         mode = 0
 
-    country, raw_platform = raw_metadata
-    platform = parse_platform(raw_platform)
+    if raw_metadata != "":
+        country, raw_platform = raw_metadata
+        platform = parse_platform(raw_platform)
+    else:
+        country, platform = None, None
 
     result = {
         "username1": p1,
