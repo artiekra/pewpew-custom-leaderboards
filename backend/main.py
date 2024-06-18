@@ -9,6 +9,7 @@ from loguru import logger
 
 import database.connect as dbc
 import database.interact as dbi
+from parser.parse import parse_score
 
 logger = logger.opt(colors=True)
 
@@ -30,22 +31,28 @@ def main(config: dict) -> None:
     session = dbc.main(config["database"])
 
     # ---------- TESTING ----------
-    test_score = {
-        "era": 0,
-        "username1": "test",
-        "username2": "test2",
-        "level_id": 0,
-        "score": 0,
-        "country": "test",
-        "platform": "test",
-        "mode": 0
-    }
-    dbi.insert_score(session, test_score)
+    # test_score = {
+    #     "era": 0,
+    #     "username1": "test",
+    #     "username2": "test2",
+    #     "level_id": 0,
+    #     "score": 0,
+    #     "country": "test",
+    #     "platform": "test",
+    #     "mode": 0
+    # }
+    # dbi.insert_score(session, test_score)
+    #
+    # test_level = {
+    #     "name": "test"
+    # }
+    # dbi.insert_level(session, test_level)
 
-    test_level = {
-        "name": "test"
-    }
-    dbi.insert_level(session, test_level)
+    msg = input()
+    parsed = parse_score(msg)
+
+    print(parsed)
+    dbi.insert_score(session, parsed)
 
 
 if __name__ == "__main__":
