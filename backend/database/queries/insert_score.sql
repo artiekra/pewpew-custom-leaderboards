@@ -1,3 +1,3 @@
-INSERT INTO score(era, username1, username2, level_id, score, country, platform, mode)
+INSERT INTO score(era, username1, username2, _level, score, country, platform, _mode)
   VALUES (:era, :username1, :username2,
-  :level_id, :score, :country, :platform, :mode);
+  :_level, :score, :country, :platform, :_mode);

@@ -26,6 +26,7 @@ def apply_regex(msg: str) -> [list[str], int, [str, str]]:
 
     rx = load_regex("parser/regex.txt")
     msg_split = re.findall(rx, msg)
+    logger.debug("Regex's reply: <w>{}</>", msg_split)
 
     names, score, metadata = [], 0, ""
     for group in msg_split:
@@ -67,11 +68,11 @@ def parse_contents(msg: str) -> dict|None:
     result = {
         "username1": p1,
         "username2": p2,
-        "level_name": level,
+        "_level": level,
         "score": score,
         "country": country,
         "platform": platform,
-        "mode": mode
+        "_mode": mode
     }
 
     return result

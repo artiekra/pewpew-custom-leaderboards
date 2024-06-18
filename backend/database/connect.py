@@ -14,7 +14,6 @@ def create_tables(con: sqlite3.Connection) -> None:
     logger.info("Creating missing tables..")
 
     cur = con.cursor()
-    cur.execute(QUERIES["create_table_level"])
     cur.execute(QUERIES["create_table_score"])
 
     con.commit()
