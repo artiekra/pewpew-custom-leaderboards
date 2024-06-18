@@ -3,6 +3,8 @@
 from loguru import logger
 from flask import Flask
 
+from .blueprints.leaderboards import bp as leaderboards_pb
+
 logger = logger.opt(colors=True)
 
 
@@ -15,13 +17,6 @@ def get_app(config: dict) -> Flask:
 
     app = Flask(__name__)
 
-    @app.route("/")
-    @app.route("/scores-feed")
-    def scores_feed():
-        """Render #scores-feed live"""
-        logger.log("FRONT", "Front-end requested: <m>{}</>",
-            "/scores-feed")
-
-        return "Hi!"
+    app.register_blueprint(leaderboards_pb)
 
     return app
