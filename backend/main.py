@@ -2,6 +2,7 @@
 
 from loguru import logger
 from fastapi import FastAPI
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
 
 from .api.database.connect import main as db_connect
 from .api.metadata import API_TAGS_METADATA, API_DESCRIPTION
@@ -27,6 +28,12 @@ def get_app(config: dict) -> FastAPI:
       openapi_tags=API_TAGS_METADATA, license_info={
         "name": "Apache 2.0"
     })
+
+    # make API only accessible locally
+    app.add_middleware(
+        TrustedHostMiddleware, allowed_hosts=["localhost"] 
+    )
+
     # app.include_router(get_router_scores(db_con))
     # app.include_router(get_router_cached(db_con))
     app.include_router(api_parse_router, prefix="/parse")
