@@ -4,6 +4,8 @@ import re
 
 from loguru import logger
 
+from parser.metadata import parse_platform
+
 logger = logger.opt(colors=True)
 
 
@@ -63,7 +65,8 @@ def parse_contents(msg: str) -> dict|None:
         p1, p2 = usernames[0], None
         mode = 0
 
-    country, platform = raw_metadata
+    country, raw_platform = raw_metadata
+    platform = parse_platform(raw_platform)
 
     result = {
         "username1": p1,
