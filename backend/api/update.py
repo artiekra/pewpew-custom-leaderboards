@@ -7,7 +7,7 @@ from loguru import logger
 from fastapi import APIRouter
 from pydantic import BaseModel
 
-from database.interact import *  # [TODO: fix wildcard import?..]
+import database.interact as dbi
 
 logger = logger.opt(colors=True)
 
@@ -39,7 +39,7 @@ def get_router(con: sqlite3.Connection) -> APIRouter:
         logger.log("API", "Got POST request to insert score: <w>{}</>",
                    repr(score))
 
-        db_insert_score(con, score)
+        dbi.insert_score(con, score)
 
     @router.delete("/delete_score/", tags=["update"])
     def delete_score(id: int):
@@ -47,7 +47,6 @@ def get_router(con: sqlite3.Connection) -> APIRouter:
         logger.log("API", "Got POST request to delete score, id <m>{}</>",
                    id)
 
-        db_delete_score(con, id)
-
+        dbi.delete_score(con, id)
 
     return router

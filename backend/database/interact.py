@@ -9,10 +9,8 @@ from database.query import QUERIES
 
 logger = logger.opt(colors=True)
 
-# [TODO: refactor function names]
 
-
-def db_insert_score(con: sqlite3.Connection, score) -> None:
+def insert_score(con: sqlite3.Connection, score) -> None:
     """Insert data about a certain score into "score" table"""
     logger.debug("Adding a score: <w>{}</>", repr(score))
 
@@ -22,7 +20,7 @@ def db_insert_score(con: sqlite3.Connection, score) -> None:
     con.commit()
 
 
-def db_delete_score(con: sqlite3.Connection, id: int) -> None:
+def delete_score(con: sqlite3.Connection, id: int) -> None:
     """Delete data about a certain score from"score" table,
     given the id"""
     logger.debug("Deleting score with id <m>{}</>", id)
@@ -33,12 +31,12 @@ def db_delete_score(con: sqlite3.Connection, id: int) -> None:
     con.commit()
 
 
-def db_get_all(con: sqlite3.Connection, page: int, limit: int,
-               filters: list[str|int|None]) -> list[tuple]:
+def get_all(con: sqlite3.Connection, page: int, limit: int,
+               filters: list[int|None]) -> list[tuple]:
     """Get all available in the database data"""
     logger.debug("Getting everything from the database..")
 
-    timestamp_start, timestamp_end, era, player, level = filters
+    timestamp_start, timestamp_end, era = filters
     logger.trace("Filters: <w>{}</>", filters)
 
     cur = con.cursor()
@@ -55,7 +53,7 @@ def db_get_all(con: sqlite3.Connection, page: int, limit: int,
     return result, metadata
 
 
-def db_get_player_latest(con: sqlite3.Connection, player: str,
+def get_player_latest(con: sqlite3.Connection, player: str,
                filters: list[int|None]) -> list[tuple]:
     """Get all latest player scores in the database data"""
     logger.debug("Getting latest player (<m>{}</>) scores from the database..",
