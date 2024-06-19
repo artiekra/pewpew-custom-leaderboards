@@ -2,6 +2,7 @@
 
 from loguru import logger
 from fastapi import FastAPI
+from fastapi import APIRouter
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 
 from .api.database.connect import main as db_connect
@@ -14,6 +15,21 @@ from .api.parse import router as api_parse_router
 
 logger = logger.opt(colors=True)
 
+
+def include_router_v1(app: FastAPI, router: APIRouter, prefix: str) -> None:
+    """Include router with different versioning prefixes
+    (without version, "v1" and "latest")
+    `prefix` is raw, without any slashes"""
+    logger.trace("Including router with prefix <m>{}</>", prefix)
+
+    prefix = "/" + prefix
+    prefix2 = "/v1" + prefix
+    prefix3 = "/latest" + prefix
+
+    app.include_router(router, prefix=prefix, include_in_schema=False)
+    app.include_router(router, prefix=prefix2)
+    app.include_router(router, prefix=prefix3, include_in_schema=False)
+ 
 
 def get_app(config: dict) -> FastAPI:
     """Setup and get FastAPI app"""
@@ -34,9 +50,9 @@ def get_app(config: dict) -> FastAPI:
         TrustedHostMiddleware, allowed_hosts=["localhost"] 
     )
 
-    app.include_router(get_router_scores(db_con))
+    include_router_v1(app, get_router_scores(db_con), "scores")
     # app.include_router(get_router_cached(db_con))
-    app.include_router(api_parse_router, prefix="/parse")
-    app.include_router(get_router_update(db_con))
+    include_router_v1(app, api_parse_router, "parse")
+    include_router_v1(app, get_router_update(db_con), "update")
 
     return app

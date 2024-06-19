@@ -22,25 +22,13 @@ def get_router(con: sqlite3.Connection) -> APIRouter:
         """Get all available records for a particular time period"""
         logger.log("API", "Getting all available scores..")
 
-        full_result = db_get_all(con)
+        headers = ["id", "timestamp", "era", "username1", "username2",
+                   "level", "score", "country", "platform", "mode"]
 
-        result_dict_full = []
-        for result in full_result:
-            result_dict = {
-                "id": result[0],
-                "timestamp": result[1],
-                "era": result[2],
-                "username1": result[3],
-                "username2": result[4],
-                "level": result[5],
-                "score": result[6],
-                "country": result[7],
-                "platform": result[8],
-                "mode": result[9]
-            }
-            result_dict_full.append(result_dict)
+        result = db_get_all(con)
+        result_dict = [zip(headers, x) for x in result]
 
-        return result_dict_full
+        return result_dict
 
     # @router.get("/get_player_scores/", tags=["scores"])
     # def get_player_scores():

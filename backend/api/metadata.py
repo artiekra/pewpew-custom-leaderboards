@@ -1,13 +1,14 @@
 # [TODO: figure out multiline description]
 
 API_DESCRIPTION = """Custom leaderboards for PewPewLive.
+Note that for every method, you can drop /v1 part or use /latest.
 Artemii Kravchuk 2024"""
 
 API_TAGS_METADATA = [
-    # {
-    #     "name": "scores",
-    #     "description": "Get raw data from the database on player/level scores",
-    # },
+    {
+        "name": "scores",
+        "description": "Get raw data from the database on player/level scores",
+    },
     # {
     #     "name": "cached",
     #     "description": "Access cached data from calculations for the leaderboard",

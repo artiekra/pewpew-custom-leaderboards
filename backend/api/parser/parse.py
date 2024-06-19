@@ -37,7 +37,7 @@ def apply_regex(msg: str) -> [list[str], int, [str, str]]:
             names.append(name)
 
         elif group[1] != "":
-            raw_metadata = group[1][1:-1]
+            raw_metadata = group[1][2:-2]
             metadata = raw_metadata.split(" - ")
 
         # overwrites previous score. only care
@@ -73,11 +73,11 @@ def parse_contents(msg: str) -> dict|None:
     result = {
         "username1": p1,
         "username2": p2,
-        "_level": level,
+        "level": level,
         "score": score,
         "country": country,
         "platform": platform,
-        "_mode": mode
+        "mode": mode
     }
 
     return result
