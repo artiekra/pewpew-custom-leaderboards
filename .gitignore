@@ -1,6 +1,7 @@
 # Some custom definitions
 */*.db
 *.db
+export/
 
 
 # Created by https://www.toptal.com/developers/gitignore/api/python,flask,venv
