@@ -7,7 +7,7 @@ from loguru import logger
 from fastapi import APIRouter
 from pydantic import BaseModel
 
-from .database.interact import *  # [TODO: fix wildcard import?..]
+from database.interact import *  # [TODO: fix wildcard import?..]
 
 logger = logger.opt(colors=True)
 

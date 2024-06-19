@@ -5,9 +5,9 @@ from typing import Union
 from loguru import logger
 from fastapi import APIRouter
 
-from .parser.parse import apply_regex_raw
-from .parser.parse import parse_score as parser_parse_score
-from .parser.metadata import parse_platform as parser_parse_platform
+from parser.parse import apply_regex_raw
+from parser.parse import parse_score as parser_parse_score
+from parser.metadata import parse_platform as parser_parse_platform
 
 logger = logger.opt(colors=True)
 

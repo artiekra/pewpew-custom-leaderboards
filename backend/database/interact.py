@@ -5,7 +5,7 @@ import sqlite3
 
 from loguru import logger
 
-from .query import QUERIES
+from database.query import QUERIES
 
 logger = logger.opt(colors=True)
 

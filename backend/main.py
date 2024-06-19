@@ -1,67 +1,85 @@
-"""Launch both backend and frontend (flask)"""
-
-import sys
-import signal
-import asyncio
+"""Backend entry point"""
 
 import orjson
+import uvicorn
+
 from loguru import logger
+from fastapi import FastAPI
+from fastapi import APIRouter
+from fastapi.middleware.cors import CORSMiddleware
 
-from a2wsgi import WSGIMiddleware
-from uvicorn import Server, Config
+from database.connect import main as db_connect
+from api.metadata import API_TAGS_METADATA, API_DESCRIPTION
 
-import backend.main
-import frontend.main
-
-# comment out to not get TRACE logs (default is DEBUG)
-logger.remove(0)
-logger.add(sys.stderr, level="TRACE")
+from api.scores import get_router as get_router_scores
+from api.cached import get_router as get_router_cached
+from api.update import get_router as get_router_update
+from api.parse import router as api_parse_router
 
 logger = logger.opt(colors=True)
 
 
-def sigint_handler(sig, frame):
-    """Handle SIGINT signal (e.g. Ctrl+C)"""
-    logger.error("Got SIGINT, stopping...")
-    logger.trace("sig=<m>{}</>, frame=<m>{}</>", sig, frame)
+def include_router_v1(app: FastAPI, router: APIRouter, prefix: str) -> None:
+    """Include router with different versioning prefixes
+    (without version, "v1" and "latest")
+    `prefix` is raw, without any slashes"""
+    logger.trace("Including router with prefix <m>{}</>", prefix)
 
-    sys.exit(0)
+    prefix = "/" + prefix
+    prefix2 = "/v1" + prefix
+    prefix3 = "/latest" + prefix
 
-
-class MyServer(Server):
-
-    async def run(self, sockets=None):
-        self.config.setup_event_loop()
-        return await self.serve(sockets=sockets)
-
-
-async def main(config_path: str = "config.json") -> None:
-    """Run the app (both frontend&backend)"""
-    logger.info("Reading config and running the app..")
-
-    logger.debug("Registering signal handler for <y>{}</>", "signal.SIGINT")
-    signal.signal(signal.SIGINT, sigint_handler)
-
-    with open(config_path, "r", encoding="UTF-8") as file:
-        config = orjson.loads(file.read())
-    api = backend.main.get_app(config)
-
-    frontend_app = frontend.main.get_app(config)
-    asgi_frontend = WSGIMiddleware(frontend_app)
-
-    config_list = [
-        (api, config["uvicorn"]["port_api"]),
-        (asgi_frontend, config["uvicorn"]["port_frontend"]),
-    ]
-    apps = []
-    for cfg in config_list:
-        server_config = Config(cfg[0], host=config["uvicorn"]["host"], port=cfg[1])
-        server = MyServer(config=server_config)
-        apps.append(server.run())
-    return await asyncio.gather(*apps)
+    app.include_router(router, prefix=prefix, include_in_schema=False)
+    app.include_router(router, prefix=prefix2)
+    app.include_router(router, prefix=prefix3, include_in_schema=False)
  
 
+def get_app(config: dict) -> FastAPI:
+    """Setup and get FastAPI app"""
+
+    db_con = db_connect(config["database"])
+
+    # custom logging (loguru) method for API-specific stuff
+    # debug 10, info 20, error 40
+    logger.level("API", no=10, color="<fg #ff7100>")
+
+    app = FastAPI(title="PewPew Community Portal", description=API_DESCRIPTION,
+      openapi_tags=API_TAGS_METADATA, license_info={
+        "name": "Apache 2.0"
+    })
+
+    # implement CORS
+    origins = [
+        "http://localhost:5001",  # Flask frontend
+        "http://localhost:5173",  # React frontend
+    ]
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+    include_router_v1(app, get_router_scores(db_con), "scores")
+    # app.include_router(get_router_cached(db_con))
+    include_router_v1(app, api_parse_router, "parse")
+    include_router_v1(app, get_router_update(db_con), "update")
+
+    return app
+
+
+def main(config: dict) -> None:
+    """Run FastAPI on uvicorn server"""
+    logger.info("Launching uvicorn on 0.0.0.0:8000.. (app: FastAPI)")
+
+    app = get_app(config)
+
+    uvicorn.run(app, host="0.0.0.0", port=8000)
+
+
 if __name__ == "__main__":
-    logger.info("Starting the app...")
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(main())
+    logger.info("Starting backend...")
+    with open("config.json", "r", encoding="UTF-8") as file:
+        config = orjson.loads(file.read())
+    main(config)

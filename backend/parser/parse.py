@@ -4,7 +4,7 @@ import re
 
 from loguru import logger
 
-from .metadata import parse_platform
+from parser.metadata import parse_platform
 
 logger = logger.opt(colors=True)
 
