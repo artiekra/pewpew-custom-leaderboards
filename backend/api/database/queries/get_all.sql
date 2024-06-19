@@ -1,1 +1,1 @@
-SELECT * FROM score;
+SELECT * FROM score LIMIT :page*:limit, :limit;

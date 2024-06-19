@@ -5,7 +5,7 @@ from typing import Union, Optional
 
 from loguru import logger
 from fastapi import APIRouter
-from pydantic import BaseModel, validator
+from pydantic import BaseModel
 
 from .database.interact import *  # [TODO: fix wildcard import?..]
 
