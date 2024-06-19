@@ -9,6 +9,8 @@ from database.query import QUERIES
 
 logger = logger.opt(colors=True)
 
+# [TODO: refactor function names]
+
 
 def db_insert_score(con: sqlite3.Connection, score) -> None:
     """Insert data about a certain score into "score" table"""
@@ -51,3 +53,19 @@ def db_get_all(con: sqlite3.Connection, page: int, limit: int,
     }
 
     return result, metadata
+
+
+def db_get_player_latest(con: sqlite3.Connection, player: str,
+               filters: list[int|None]) -> list[tuple]:
+    """Get all latest player scores in the database data"""
+    logger.debug("Getting latest player (<m>{}</>) scores from the database..",
+                 player)
+
+    era, mode = filters
+    logger.trace("Filters: <w>{}</>", filters)
+
+    cur = con.cursor()
+    cur.execute(QUERIES["get_player_latest"], {"player": player})
+    result = cur.fetchall()
+
+    return result
