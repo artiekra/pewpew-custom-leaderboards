@@ -4,9 +4,9 @@
 
 Custom advanced leaderboards for PewPewLive.
 
-Backend by (artiekra)[https://github.com/artiekra] - uses FastAPI + SQLite.
+Backend by [artiekra](https://github.com/artiekra) - uses FastAPI + SQLite.
 
-Frontend by (Chelovek-01)[https://github.com/Chelovek-01] - uses React + Vite.
+Frontend by [Chelovek-01](https://github.com/Chelovek-01) - uses React + Vite.
 
 ## Launching backend
 
