@@ -25,16 +25,16 @@
   </tr>
   {% for score in scores %}
     <tr>
-      <td>{{ score[1] }}</th>
-      <td>{{ score[2] }}</th>
-      <td>{{ score[3] }}</th>
-      <td>{{ score[4] }}</th>
-      <td>{{ score[5] }}</th>
-      <td>{{ score[6] }}</th>
-      <td>{{ score[7] }}</th>
-      <td>{{ score[8] }}</th>
-      <td>{{ score[9] }}</th>
-      <td>{{ score[10] }}</th>
+      <td>{{ score.id }}</th>
+      <td>{{ score.timestamp }}</th>
+      <td>{{ score.era }}</th>
+      <td>{{ score.username1 }}</th>
+      <td>{{ score.username2 }}</th>
+      <td>{{ score.level }}</th>
+      <td>{{ score.score }}</th>
+      <td>{{ score.country }}</th>
+      <td>{{ score.platform }}</th>
+      <td>{{ score.mode }}</th>
     </tr>
   {% endfor %}
 

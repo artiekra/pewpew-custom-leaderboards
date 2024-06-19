@@ -29,7 +29,7 @@ class Score(BaseModel):
 
 def get_router(con: sqlite3.Connection) -> APIRouter:
     """Create FastAPI router, given database connection"""
-    logger.trace("Creating FastAPI router for score methods")
+    logger.trace("Creating FastAPI router for update methods")
 
     router = APIRouter()
 
