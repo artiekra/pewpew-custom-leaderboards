@@ -35,11 +35,11 @@ def get_router(con: sqlite3.Connection) -> APIRouter:
         headers = ["id", "timestamp", "era", "username1", "username2",
                    "level", "score", "country", "platform", "mode"]
 
-        result = db_get_all(con, page, limit, [timestamp_start, timestamp_end,
-                                               era, player, level])
+        result, metadata = db_get_all(con, page, limit, [timestamp_start,
+            timestamp_end, era, player, level])
         result_dict = [zip(headers, x) for x in result]
 
-        return result_dict
+        return {"result": result_dict, "metadata": metadata}
 
     # @router.get("/get_player_scores/", tags=["scores"])
     # def get_player_scores():

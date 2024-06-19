@@ -32,12 +32,22 @@ def db_delete_score(con: sqlite3.Connection, id: int) -> None:
 
 
 def db_get_all(con: sqlite3.Connection, page: int, limit: int,
-               filters: list) -> list[tuple]:
+               filters: list[str|int|None]) -> list[tuple]:
     """Get all available in the database data"""
     logger.debug("Getting everything from the database..")
+
+    timestamp_start, timestamp_end, era, player, level = filters
+    logger.trace("Filters: <w>{}</>", filters)
 
     cur = con.cursor()
     cur.execute(QUERIES["get_all"], {"page": page, "limit": limit})
     result = cur.fetchall()
 
-    return result
+    cur.execute(QUERIES["get_score_count"])
+    count = cur.fetchone()[0]
+    
+    metadata = {
+        "total_items": count
+    }
+
+    return result, metadata
