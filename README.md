@@ -26,8 +26,15 @@ py main.py
 ## Launching frontend
 
 (Linux and Windows instruction)
+```bash
 
+# prepare
+You need node modules with yarn dependencies
+
+#run
 npx yarn
+
+```
 
 ## Usage
 
