@@ -3,7 +3,7 @@
 from loguru import logger
 from fastapi import FastAPI
 from fastapi import APIRouter
-from fastapi.middleware.trustedhost import TrustedHostMiddleware
+from fastapi.middleware.cors import CORSMiddleware
 
 from .api.database.connect import main as db_connect
 from .api.metadata import API_TAGS_METADATA, API_DESCRIPTION
@@ -45,9 +45,17 @@ def get_app(config: dict) -> FastAPI:
         "name": "Apache 2.0"
     })
 
-    # make API only accessible locally
+    # implement CORS
+    origins = [
+        "http://localhost:5001",  # Flask frontend
+        "http://localhost:5173",  # React frontend
+    ]
     app.add_middleware(
-        TrustedHostMiddleware, allowed_hosts=["localhost"] 
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
     )
 
     include_router_v1(app, get_router_scores(db_con), "scores")
