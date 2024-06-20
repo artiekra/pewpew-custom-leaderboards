@@ -4,11 +4,11 @@ from typing import Optional
 
 from sqlmodel import Field, SQLModel, create_engine
 
-# [TODO: add class doctstrings (all of the classes in this file)
-
 # [TODO: reconsider using _timestamp, _level_, _mode]
 # [TODO: add additional validation]
 class ScoreBase(SQLModel):
+    """Base class to represent scores"""
+
     timestamp: int
     era: int
     username1: str
@@ -21,14 +21,19 @@ class ScoreBase(SQLModel):
 
 
 class Score(ScoreBase, table=True):
+    """Class to represent scores in the database (with auto-increment
+    primary-key id"""
     id: int | None = Field(default=None, primary_key=True)
 
 
 class ScoreCreate(ScoreBase):
+    """Class to represent scores (when creating/inserting one with api"""
     pass
 
 
 class ApiRequest(SQLModel, table=True):
+    """Class to represent API request (for logging into database)"""
+
     id: int | None = Field(default=None, primary_key=True)
     method: str
     path: str
