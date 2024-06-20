@@ -1,11 +1,12 @@
 """Backend entry point"""
 
+import time
 import orjson
 import uvicorn
 
 from loguru import logger
-from fastapi import FastAPI
 from fastapi import APIRouter
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from database.connect import main as db_connect
@@ -19,7 +20,7 @@ from api.parse import router as api_parse_router
 logger = logger.opt(colors=True)
 
 
-# [TODO: use logging middleware]
+# [TODO: add logging all requests into the database]
 def include_router_v1(app: FastAPI, router: APIRouter, prefix: str) -> None:
     """Include router with different versioning prefixes
     (without version, "v1" and "latest")
@@ -48,6 +49,19 @@ def get_app(config: dict) -> FastAPI:
       openapi_tags=API_TAGS_METADATA, license_info={
         "name": "Apache 2.0"
     })
+
+    @app.middleware("http")
+    async def add_logging_middleware(request: Request, call_next):
+        """Log all requests automatically (with http middleware)"""
+
+        path = request.url.path
+        if request.query_params:
+            path += f"?{request.query_params}"
+
+        logger.log("API", "Request at <w>{}</>", path)
+
+        response = await call_next(request)
+        return response
 
     # implement CORS
     origins = [

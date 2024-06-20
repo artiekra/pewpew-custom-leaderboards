@@ -28,8 +28,6 @@ def get_router(con: sqlite3.Connection) -> APIRouter:
         era: int = 2,
     ):
         """Get all available records for a particular time period"""
-        logger.log("API", "Getting all available scores..")
-
         headers = ["id", "timestamp", "era", "username1", "username2",
                    "level", "score", "country", "platform", "mode"]
 
@@ -48,9 +46,6 @@ def get_router(con: sqlite3.Connection) -> APIRouter:
         mode: Optional[int] = None
     ):
         """Get all latest scores for each level (given the player)"""
-        logger.log("API", "Getting all latest scores.. (player=<m>{}</>)",
-                   player)
-
         headers = ["id", "timestamp", "era", "username1", "username2",
                    "level", "score", "country", "platform", "mode"]
 

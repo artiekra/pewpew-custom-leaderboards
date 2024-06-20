@@ -18,8 +18,6 @@ router = APIRouter()
 def parse_score(message: str):
     """Parse score message from #scores-feed.
     Pass JUST the message WITH formatting IN MARKDOWN."""
-    logger.log("API", "Got POST request to parse <w>{}</>", message)
-
     parsed = parser_parse_score(message)
 
     return {"responce": parsed}
@@ -30,8 +28,6 @@ def apply_regex_to_score(message: str):
     """Apply regex, which is used for parsing scores in #scores-feed.
     Divides given string (Discord message assumed) into capture groups.
     Pass JUST the message WITH formatting IN MARKDOWN."""
-    logger.log("API", "Got POST request to apply regex: <w>{}</>", message)
-
     parsed = apply_regex_raw(message)
 
     return {"responce": parsed}
@@ -42,8 +38,6 @@ def parse_platform(message: str):
     """Convert emoji/text into one of the platforms.
     a android, i ios, w windows, b web, u/e unknown
     (e - uknown by parser, u - uknown by #scores-feed)"""
-    logger.log("API", "Got POST request to parse platform: <m>{}</>", message)
-
     parsed = parser_parse_platform(message)
 
     return {"responce": parsed}
