@@ -35,7 +35,7 @@ def get_router(con: sqlite3.Connection) -> APIRouter:
             timestamp_end, era])
         result_dict = [zip(headers, x) for x in result]
 
-        return {"result": result_dict, "metadata": metadata}
+        return {"responce": result_dict, "metadata": metadata}
 
 
     # [TODO: make filters work]
@@ -52,7 +52,7 @@ def get_router(con: sqlite3.Connection) -> APIRouter:
         result = dbi.get_player_latest(con, player, [era, mode])
         result_dict = [zip(headers, x) for x in result]
 
-        return {"result": result_dict, "metadata": None}
+        return {"responce": result_dict, "metadata": None}
 
 
     return router
