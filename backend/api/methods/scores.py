@@ -17,7 +17,6 @@ def get_router(session) -> APIRouter:
 
     router = APIRouter()
 
-    # [TODO: account for filters in metadata (maybe separately?)]
     @router.get("/get_scores/", tags=["scores"])
     def get_scores(
         page: int,

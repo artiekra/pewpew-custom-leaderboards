@@ -49,20 +49,29 @@ def get_scores(session, page: int, limit: int,
     logger.trace("Filters: <w>{}</>", filters)
 
     # [TODO: page-based pagination exists as built-in? maybe?]
-    query = select(Score).offset(page*limit).limit(limit)
+    # [TODO: optimize code? dry?]
+    main_query = select(Score).offset(page*limit).limit(limit)
+    count_query = session.query(Score)
+    count = count_query.count()
+
     if era is not None:
-        query = query.where(Score.era == era)
+        main_query = main_query.where(Score.era == era)
+        count_query = count_query.where(Score.era == era)
     if timestamp_start is not None:
-        query = query.where(timestamp_start <= Score.timestamp)
+        main_query = main_query.where(timestamp_start <= Score.timestamp)
+        count_query = count_query.where(timestamp_start <= Score.timestamp)
     if timestamp_end is not None:
-        query = query.where(Score.timestamp <= timestamp_end)
-    result = session.exec(query).all()
+        main_query = main_query.where(Score.timestamp <= timestamp_end)
+        count_query = count_query.where(Score.timestamp <= timestamp_end)
 
     # [TODO: use select(id) and count primary keys only for efficiency]
-    count = session.query(Score).count()
+    count_filtered = count_query.count()
+
+    result = session.exec(main_query).all()
 
     metadata = {
-        "total_items": count
+        "item_count": count,
+        "item_count_filtered": count_filtered
     }
 
     return result, metadata
