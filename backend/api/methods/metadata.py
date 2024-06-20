@@ -1,7 +1,5 @@
-# [TODO: figure out multiline description]
-
-API_DESCRIPTION = """Custom leaderboards for PewPewLive.
-Note that for every method, you can drop /v1 part or use /latest.
+API_DESCRIPTION = """Custom leaderboards for PewPewLive.<br>
+Note that for every method, you can drop /v1 part or use /latest.<br>
 Artemii Kravchuk 2024"""
 
 API_TAGS_METADATA = [
