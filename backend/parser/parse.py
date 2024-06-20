@@ -4,7 +4,7 @@ import re
 
 from loguru import logger
 
-from parser.metadata import parse_platform
+from parser.metadata import parse_platform  # pylint: disable=W4901,C0411
 
 logger = logger.opt(colors=True)
 
@@ -58,7 +58,7 @@ def parse_contents(msg: str) -> dict|None:
 
     usernames, level = names[:-1], names[-1]
     if len(usernames) == 2:
-        p1, p2 = usernames
+        p1, p2 = usernames  # pylint: disable=unbalanced-tuple-unpacking
         mode = 1
     else:
         p1, p2 = usernames[0], None

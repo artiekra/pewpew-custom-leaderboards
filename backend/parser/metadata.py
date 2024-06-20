@@ -22,5 +22,5 @@ def parse_platform(raw_platform: str) -> str:
     for char, matches in PLATFORMS.items():
         if raw_platform in matches:
             return char
-    
+
     return "e"

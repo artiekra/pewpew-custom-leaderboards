@@ -1,6 +1,5 @@
 """Interacting (add/get data) with the database (SQLite)"""
 
-from datetime import datetime
 import sqlite3
 
 from loguru import logger
@@ -20,13 +19,13 @@ def insert_score(con: sqlite3.Connection, score) -> None:
     con.commit()
 
 
-def update_score(con: sqlite3.Connection, id, score) -> None:
+def update_score(con: sqlite3.Connection, score_id, score) -> None:
     """Update data about a certain score in the "score" table"""
     logger.debug("Updating a score (id <m>{}</>): <w>{}</>",
-                 id, repr(score))
+                 score_id, repr(score))
 
     data = dict(score)
-    data.update({"id": id})
+    data.update({"id": score_id})
 
     cur = con.cursor()
     cur.execute(QUERIES["update_score"], data)
@@ -34,13 +33,13 @@ def update_score(con: sqlite3.Connection, id, score) -> None:
     con.commit()
 
 
-def delete_score(con: sqlite3.Connection, id: int) -> None:
+def delete_score(con: sqlite3.Connection, score_id: int) -> None:
     """Delete data about a certain score from"score" table,
     given the id"""
-    logger.debug("Deleting score with id <m>{}</>", id)
+    logger.debug("Deleting score with id <m>{}</>", score_id)
 
     cur = con.cursor()
-    cur.execute(QUERIES["remove_score"], {"id": id})
+    cur.execute(QUERIES["remove_score"], {"id": score_id})
 
     con.commit()
 
@@ -59,7 +58,7 @@ def get_all(con: sqlite3.Connection, page: int, limit: int,
 
     cur.execute(QUERIES["get_score_count"])
     count = cur.fetchone()[0]
-    
+
     metadata = {
         "total_items": count
     }

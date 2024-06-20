@@ -30,7 +30,7 @@ def include_router_v1(app: FastAPI, router: APIRouter, prefix: str) -> None:
     app.include_router(router, prefix=prefix, include_in_schema=False)
     app.include_router(router, prefix=prefix2)
     app.include_router(router, prefix=prefix3, include_in_schema=False)
- 
+
 
 def get_app(config: dict) -> FastAPI:
     """Setup and get FastAPI app"""
