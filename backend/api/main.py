@@ -3,15 +3,16 @@
 from loguru import logger
 from fastapi import APIRouter
 from fastapi import FastAPI, Request
-from fastapi.middleware.cors import CORSMiddleware
 
 from database.connect import main as db_connect
-from api.methods.metadata import API_TAGS_METADATA, API_DESCRIPTION
 
+from api.methods.metadata import API_TAGS_METADATA, API_DESCRIPTION
 from api.methods.scores import get_router as get_router_scores
 # from api.cached import get_router as get_router_cached
 from api.methods.update import get_router as get_router_update
 from api.methods.parse import router as api_parse_router
+
+from api.middleware.main import add_middleware
 
 logger = logger.opt(colors=True)
 
@@ -48,31 +49,7 @@ def get_app(config: dict) -> FastAPI:
         "name": "Apache 2.0"
     })
 
-    @app.middleware("http")
-    async def add_logging_middleware(request: Request, call_next):
-        """Log all requests automatically (with http middleware)"""
-
-        path = request.url.path
-        if request.query_params:
-            path += f"?{request.query_params}"
-
-        logger.log("API", "Request at <w>{}</>", path)
-
-        response = await call_next(request)
-        return response
-
-    # implement CORS
-    origins = [
-        "http://localhost:5001",  # Flask frontend
-        "http://localhost:5173",  # React frontend
-    ]
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=origins,
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
+    add_middleware(app)
 
     include_router_v1(app, get_router_scores(session), "scores")
     # app.include_router(get_router_cached(db_con))

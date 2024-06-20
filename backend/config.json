@@ -2,7 +2,7 @@
   "database": {
     "file": "data.db",
     "config": {
-      "echo": true
+      "echo": false
     }
   },
   "uvicorn": {
