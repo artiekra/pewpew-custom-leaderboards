@@ -3,9 +3,10 @@
 from sqlalchemy import text
 
 from loguru import logger
+from sqlmodel import select
 
-from database.query import QUERIES
 from database.table import Score
+from database.query import QUERIES
 
 logger = logger.opt(colors=True)
 
@@ -47,17 +48,17 @@ def get_all(con, page: int, limit: int,
     timestamp_start, timestamp_end, era = filters
     logger.trace("Filters: <w>{}</>", filters)
 
-    sql = text(QUERIES["get_all"])
-    result = con.execute(sql, {"page": page, "limit": limit})
+    # [TODO: page-based pagination exists as built-in? maybe?]
+    result = con.exec(select(Score).offset(page*limit).limit(limit)).all()
 
-    sql = text(QUERIES["get_score_count"])
-    count = con.execute(sql).one()[0]
+    # [TODO: use select(id) and count primary keys only for efficiency]
+    count = con.query(Score).count()
 
     metadata = {
         "total_items": count
     }
 
-    return result.all(), metadata
+    return result, metadata
 
 
 def get_player_latest(con, player: str,

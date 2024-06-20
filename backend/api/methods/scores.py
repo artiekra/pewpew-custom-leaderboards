@@ -28,14 +28,10 @@ def get_router(con: sqlite3.Connection) -> APIRouter:
         era: int = 2,
     ):
         """Get all available records for a particular time period"""
-        headers = ["id", "timestamp", "era", "username1", "username2",
-                   "level", "score", "country", "platform", "mode"]
-
-        result, metadata = dbi.get_all(con, page, limit, [timestamp_start,
+        results, metadata = dbi.get_all(con, page, limit, [timestamp_start,
             timestamp_end, era])
-        result_dict = [zip(headers, x) for x in result]
 
-        return {"responce": result_dict, "metadata": metadata}
+        return {"responce": results, "metadata": metadata}
 
 
     # [TODO: make filters work]
