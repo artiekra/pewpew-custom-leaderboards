@@ -25,6 +25,6 @@ async def unpack_request(raw_request) -> dict:
         body = await raw_request.json()
     except:  # [TODO: stop using bare "except" statement]
         body = None
-    request["body"] = body
+    request["json_body"] = body
 
     return request

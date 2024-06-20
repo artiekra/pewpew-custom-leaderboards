@@ -17,7 +17,6 @@ from api.middleware.main import add_middleware
 logger = logger.opt(colors=True)
 
 
-# [TODO: add logging all requests into the database]
 def include_router_v1(app: FastAPI, router: APIRouter, prefix: str) -> None:
     """Include router with different versioning prefixes
     (without version, "v1" and "latest")
@@ -49,7 +48,7 @@ def get_app(config: dict) -> FastAPI:
         "name": "Apache 2.0"
     })
 
-    add_middleware(app)
+    add_middleware(app, session)
 
     include_router_v1(app, get_router_scores(session), "scores")
     # app.include_router(get_router_cached(db_con))

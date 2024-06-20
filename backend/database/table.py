@@ -4,6 +4,7 @@ from typing import Optional
 
 from sqlmodel import Field, SQLModel, create_engine
 
+# [TODO: add class doctstrings (all of the classes in this file)
 
 # [TODO: reconsider using _timestamp, _level_, _mode]
 # [TODO: add additional validation]
@@ -25,3 +26,11 @@ class Score(ScoreBase, table=True):
 
 class ScoreCreate(ScoreBase):
     pass
+
+
+class ApiRequest(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    method: str
+    path: str
+    ip: str | None = None  # seems to always be available.. privacy tho?
+    json_body: str | None = None
