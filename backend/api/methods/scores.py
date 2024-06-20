@@ -17,14 +17,14 @@ def get_router(session) -> APIRouter:
 
     router = APIRouter()
 
-    # [TODO: make filters work]
+    # [TODO: account for filters in metadata (maybe separately?)]
     @router.get("/get_scores/", tags=["scores"])
     def get_scores(
         page: int,
         limit: int,
         timestamp_start: Optional[int] = None,
         timestamp_end: Optional[int] = None,
-        era: int = 2,
+        era: Optional[int] = None,
     ):
         """Get all available records for a particular time period"""
         results, metadata = dbi.get_all(session, page, limit, [timestamp_start,

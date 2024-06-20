@@ -49,7 +49,14 @@ def get_all(session, page: int, limit: int,
     logger.trace("Filters: <w>{}</>", filters)
 
     # [TODO: page-based pagination exists as built-in? maybe?]
-    result = session.exec(select(Score).offset(page*limit).limit(limit)).all()
+    query = select(Score).offset(page*limit).limit(limit)
+    if era is not None:
+        query = query.where(Score.era == era)
+    if timestamp_start is not None:
+        query = query.where(timestamp_start <= Score.timestamp)
+    if timestamp_end is not None:
+        query = query.where(Score.timestamp <= timestamp_end)
+    result = session.exec(query).all()
 
     # [TODO: use select(id) and count primary keys only for efficiency]
     count = session.query(Score).count()
