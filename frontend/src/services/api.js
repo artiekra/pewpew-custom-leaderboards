@@ -1,8 +1,6 @@
-const baseURL = 'http://localhost:8000/v1/scores/get_scores/?page=0&limit=500';
-
-export const fetchData = async () => {
+export const fetchData = async (baseURL) => {
     try {
-        const response = await fetch(`${baseURL}`, {
+        const response = await fetch(baseURL, {
             method: 'GET',
             headers : {
                 'Content-Type': 'application/json'

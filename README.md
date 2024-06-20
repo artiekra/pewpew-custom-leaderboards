@@ -23,6 +23,19 @@ pip install -r requirements.txt
 py main.py
 ```
 
+## Launching frontend
+
+(Linux and Windows instruction)
+```bash
+
+# prepare
+You need node modules with yarn dependencies
+
+#run
+npx yarn
+
+```
+
 ## Usage
 
 - `localhost:8000/docs` for API docs (and accessing it, port 8000 too)
