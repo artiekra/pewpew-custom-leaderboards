@@ -32,7 +32,7 @@ py main.py
 You need node modules with yarn dependencies
 
 #run
-npx yarn
+npx vite
 
 ```
 
