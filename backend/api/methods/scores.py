@@ -33,7 +33,6 @@ def get_router(session) -> APIRouter:
         return {"responce": results, "metadata": metadata}
 
 
-    # [TODO: make filters work]
     @router.get("/get_latest_player_scores/", tags=["scores"])
     def get_player_scores(
         player: str,
@@ -41,13 +40,9 @@ def get_router(session) -> APIRouter:
         mode: Optional[int] = None
     ):
         """Get all latest scores for each level (given the player)"""
-        headers = ["id", "timestamp", "era", "username1", "username2",
-                   "level", "score", "country", "platform", "mode"]
+        results = dbi.get_player_latest(session, player, [era, mode])
 
-        result = dbi.get_player_latest(session, player, [era, mode])
-        result_dict = [zip(headers, x) for x in result]
-
-        return {"responce": result_dict, "metadata": None}
+        return {"responce": results, "metadata": None}
 
 
     return router

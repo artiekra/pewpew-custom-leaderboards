@@ -77,7 +77,15 @@ def get_player_latest(session, player: str,
     era, mode = filters
     logger.trace("Filters: <w>{}</>", filters)
 
-    sql = text(QUERIES["get_player_latest"])
-    result = session.execute(sql, {"player": player})
+    query = select(Score).order_by(Score.timestamp.desc()) \
+        .where((Score.username1 == player) | (Score.username2 == player))
+    if era is not None:
+        query = query.where(Score.era == era)
+    if mode is not None:
+        query = query.where(Score.mode == mode)
 
-    return result.all()
+    result = session.exec(query.group_by(Score.level)).all()
+
+    print(result)
+
+    return result
