@@ -16,15 +16,14 @@ def get_db_link(db_file: str) -> str:
     return "sqlite:///" + db_file
 
 
-def main(db_file: str) -> None:
+def main(db_file: str, is_echo: bool = False) -> None:
     """Connect to the given database (SQLite file) and
     create neccesarry tables"""
 
     db_url = get_db_link(db_file)
     logger.debug("Connecting to <m>{}</>", db_url)
 
-    # [TODO: echo=True, when specified so in config]
-    engine = create_engine(get_db_link(db_file), echo=False)
+    engine = create_engine(get_db_link(db_file), echo=is_echo)
 
     logger.info("Creating missing tables..")
     SQLModel.metadata.create_all(engine)

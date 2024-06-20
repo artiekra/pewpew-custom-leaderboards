@@ -34,8 +34,10 @@ def include_router_v1(app: FastAPI, router: APIRouter, prefix: str) -> None:
 
 def get_app(config: dict) -> FastAPI:
     """Setup and get FastAPI app"""
+    logger.debug("Creating FastAPI app..")
 
-    session = db_connect(config["database"])
+    is_echo = config["database"]["config"]["echo"]
+    session = db_connect(config["database"]["file"], is_echo)
 
     # custom logging (loguru) method for API-specific stuff
     # debug 10, info 20, error 40
