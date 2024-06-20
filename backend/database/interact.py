@@ -40,7 +40,7 @@ def delete_score(session, score_id: int) -> None:
     session.commit()
 
 
-def get_all(session, page: int, limit: int,
+def get_scores(session, page: int, limit: int,
             filters: list[int|None]) -> list[tuple]:
     """Get all available in the database data"""
     logger.debug("Getting everything from the database..")

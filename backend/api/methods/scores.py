@@ -27,7 +27,7 @@ def get_router(session) -> APIRouter:
         era: Optional[int] = None,
     ):
         """Get all available records for a particular time period"""
-        results, metadata = dbi.get_all(session, page, limit, [timestamp_start,
+        results, metadata = dbi.get_scores(session, page, limit, [timestamp_start,
             timestamp_end, era])
 
         return {"responce": results, "metadata": metadata}
