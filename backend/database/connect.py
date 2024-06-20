@@ -1,32 +1,34 @@
 """Connecting/setting up the database (SQLite)"""
 
-import sqlite3
+from sqlmodel import SQLModel, Session, create_engine
+
+from database.table import Score
 
 from loguru import logger
-
-from database.query import QUERIES
 
 logger = logger.opt(colors=True)
 
 
-def create_tables(con: sqlite3.Connection) -> None:
-    """Create all the tables in the database"""
-    logger.info("Creating missing tables..")
+def get_db_link(db_file: str) -> str:
+    """Get SQLite link from file name"""
+    logger.trace("Converting <m>{}</> to SQLite db link", db_file)
 
-    cur = con.cursor()
-    cur.execute(QUERIES["create_table_score"])
-
-    con.commit()
+    return "sqlite:///" + db_file
 
 
-def main(db_file: str) -> sqlite3.Connection:
+def main(db_file: str) -> None:
     """Connect to the given database (SQLite file) and
     create neccesarry tables"""
-    logger.debug("Connecting to <m>{}</>", db_file)
 
-    con = sqlite3.connect(db_file, check_same_thread=False)
-    print(type(con))
+    db_url = get_db_link(db_file)
+    logger.debug("Connecting to <m>{}</>", db_url)
 
-    create_tables(con)
+    # [TODO: echo=True, when specified so in config]
+    engine = create_engine(get_db_link(db_file), echo=False)
 
-    return con
+    logger.info("Creating missing tables..")
+    SQLModel.metadata.create_all(engine)
+
+    session = Session(engine)
+
+    return session
