@@ -35,7 +35,7 @@ def include_router_v1(app: FastAPI, router: APIRouter, prefix: str) -> None:
 def get_app(config: dict) -> FastAPI:
     """Setup and get FastAPI app"""
 
-    db_con = db_connect(config["database"])
+    session = db_connect(config["database"])
 
     # custom logging (loguru) method for API-specific stuff
     # debug 10, info 20, error 40
@@ -72,9 +72,9 @@ def get_app(config: dict) -> FastAPI:
         allow_headers=["*"],
     )
 
-    include_router_v1(app, get_router_scores(db_con), "scores")
+    include_router_v1(app, get_router_scores(session), "scores")
     # app.include_router(get_router_cached(db_con))
     include_router_v1(app, api_parse_router, "parse")
-    include_router_v1(app, get_router_update(db_con), "update")
+    include_router_v1(app, get_router_update(session), "update")
 
     return app

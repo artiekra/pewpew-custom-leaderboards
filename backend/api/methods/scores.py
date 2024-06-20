@@ -1,6 +1,5 @@
 """Run FastAPI for backend (methods, related to updating scores)"""
 
-import sqlite3
 from typing import Optional
 
 from loguru import logger
@@ -12,7 +11,7 @@ import database.interact as dbi
 logger = logger.opt(colors=True)
 
 
-def get_router(con: sqlite3.Connection) -> APIRouter:
+def get_router(session) -> APIRouter:
     """Create FastAPI router, given database connection"""
     logger.trace("Creating FastAPI router for score methods")
 
@@ -28,7 +27,7 @@ def get_router(con: sqlite3.Connection) -> APIRouter:
         era: int = 2,
     ):
         """Get all available records for a particular time period"""
-        results, metadata = dbi.get_all(con, page, limit, [timestamp_start,
+        results, metadata = dbi.get_all(session, page, limit, [timestamp_start,
             timestamp_end, era])
 
         return {"responce": results, "metadata": metadata}
@@ -45,7 +44,7 @@ def get_router(con: sqlite3.Connection) -> APIRouter:
         headers = ["id", "timestamp", "era", "username1", "username2",
                    "level", "score", "country", "platform", "mode"]
 
-        result = dbi.get_player_latest(con, player, [era, mode])
+        result = dbi.get_player_latest(session, player, [era, mode])
         result_dict = [zip(headers, x) for x in result]
 
         return {"responce": result_dict, "metadata": None}

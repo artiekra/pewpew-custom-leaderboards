@@ -19,7 +19,7 @@ def main(backend_config: dict) -> None:
     uvicorn.run(app, host="0.0.0.0", port=8000)
 
 
-# [TODO: everywhere, con => session]
+# [TODO: everywhere, type hints]
 if __name__ == "__main__":
     logger.info("Starting backend...")
     with open("config.json", "r", encoding="UTF-8") as file:
