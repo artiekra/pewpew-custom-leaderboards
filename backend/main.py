@@ -19,6 +19,7 @@ from api.parse import router as api_parse_router
 logger = logger.opt(colors=True)
 
 
+# [TODO: use logging middleware]
 def include_router_v1(app: FastAPI, router: APIRouter, prefix: str) -> None:
     """Include router with different versioning prefixes
     (without version, "v1" and "latest")

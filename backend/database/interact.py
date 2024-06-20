@@ -20,6 +20,20 @@ def insert_score(con: sqlite3.Connection, score) -> None:
     con.commit()
 
 
+def update_score(con: sqlite3.Connection, id, score) -> None:
+    """Update data about a certain score in the "score" table"""
+    logger.debug("Updating a score (id <m>{}</>): <w>{}</>",
+                 id, repr(score))
+
+    data = dict(score)
+    data.update({"id": id})
+
+    cur = con.cursor()
+    cur.execute(QUERIES["update_score"], data)
+
+    con.commit()
+
+
 def delete_score(con: sqlite3.Connection, id: int) -> None:
     """Delete data about a certain score from"score" table,
     given the id"""

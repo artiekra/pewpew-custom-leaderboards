@@ -27,6 +27,7 @@ class Score(BaseModel):
     mode: int
 
 
+# [TODO: stop using decorators]
 def get_router(con: sqlite3.Connection) -> APIRouter:
     """Create FastAPI router, given database connection"""
     logger.trace("Creating FastAPI router for update methods")
@@ -40,6 +41,16 @@ def get_router(con: sqlite3.Connection) -> APIRouter:
                    repr(score))
 
         dbi.insert_score(con, score)
+
+    # [TODO: fix]
+    @router.put("/update_score/", tags=["update"])
+    def update_score(id: int, score: Score):
+        """Update a single score in the database"""
+        logger.log("API",
+            "Got PUT request to update score (id <m>{}</>): <w>{}</>",
+            id, repr(score))
+
+        dbi.update_score(con, id, score)
 
     @router.delete("/delete_score/", tags=["update"])
     def delete_score(id: int):
