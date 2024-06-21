@@ -3,6 +3,7 @@
 from loguru import logger
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 
 from api.middleware.logging import LoggingMiddleware
 
@@ -27,7 +28,6 @@ def add_cors(app: FastAPI) -> None:
     )
 
 
-#[TODO: add gzip middleware]
 #[TODO: add RateLimitingMiddleware (for public methods)]
 def add_middleware(app: FastAPI, session) -> None:
     """Adds all the middleware to a given FastAPI app"""
@@ -36,3 +36,4 @@ def add_middleware(app: FastAPI, session) -> None:
     add_cors(app)
 
     app.add_middleware(LoggingMiddleware, session=session)
+    app.add_middleware(GZipMiddleware, minimum_size=1000)  # default min 500
