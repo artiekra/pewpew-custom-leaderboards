@@ -17,6 +17,7 @@ def get_router(session) -> APIRouter:
 
     router = APIRouter()
 
+
     @router.get("/get_scores/", tags=["scores"])
     def get_scores(
         page: int,
@@ -42,6 +43,18 @@ def get_router(session) -> APIRouter:
         results = dbi.get_player_latest(session, player, [era, mode])
 
         return {"response": results, "metadata": None}
+
+
+    @router.get("/get_players/", tags=["scores"])
+    def get_players(
+        era: Optional[int] = None
+    ):
+        """Get all the players, available in the database"""
+        results = dbi.get_players(session, era)
+
+        results = [list(x) for x in results]
+
+        return {"responce": results, "metadata": None}
 
 
     return router

@@ -3,7 +3,7 @@
 from sqlalchemy import text
 
 from loguru import logger
-from sqlmodel import select
+from sqlmodel import select, distinct, func
 
 from database.table import Score
 from database.query import QUERIES
@@ -95,6 +95,30 @@ def get_player_latest(session, player: str,
 
     result = session.exec(query.group_by(Score.level)).all()
 
+    return result
+
+
+# [TODO: add metadata]
+def get_players(session, era: int|None) -> list[tuple]:
+    """Get all the players available in the database"""
+    logger.debug("Getting all the player pairs from the database, era <m>{}</>",
+                 era)
+
+    full_query = select(Score.username1, Score.username2)
+    if era is not None:
+        full_query = full_query.where(Score.era == era)
+
+    result = session.exec(full_query.group_by(Score.username1,
+        Score.username2)).all()
+
     print(result)
 
     return result
+
+
+# def get_leaderboard_vars(session, filters: list[int|None]) -> list[tuple]:
+#     """Get variables (N, R, etc) for leaderboards"""
+#     logger.debug("Getting leaderboard variables..")
+#
+#     era, mode = filters
+#     logger.trace("Filters: <w>{}</>", filters)

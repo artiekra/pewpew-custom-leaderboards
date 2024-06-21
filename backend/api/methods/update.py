@@ -18,6 +18,7 @@ def get_router(session) -> APIRouter:
 
     router = APIRouter()
 
+
     @router.post("/insert_score/", tags=["update"])
     def insert_score(score: ScoreCreate):
         """Insert a single score into the database"""
@@ -25,6 +26,7 @@ def get_router(session) -> APIRouter:
         new_score = Score(**score_data)
 
         dbi.insert_score(session, new_score)
+
 
     # [TODO: fix]
     @router.put("/update_score/", tags=["update"])
@@ -35,9 +37,11 @@ def get_router(session) -> APIRouter:
 
         dbi.update_score(session, id, new_score)
 
+
     @router.delete("/delete_score/", tags=["update"])
     def delete_score(id: int):
         """Delete a particular score from the database"""
         dbi.delete_score(session, id)
+
 
     return router
