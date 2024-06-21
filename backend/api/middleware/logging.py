@@ -18,6 +18,7 @@ from database.table import ApiRequest, ApiResponse
 logger = logger.opt(colors=True)
 
 
+# [TODO: better way to handle server error (now response=None)]
 class LoggingMiddleware(BaseHTTPMiddleware):
 
     def __init__(self, app: FastAPI, session) -> None:
@@ -47,11 +48,16 @@ class LoggingMiddleware(BaseHTTPMiddleware):
         response, response_data = await unpack_response(call_next, request,
                                                         request_id)
 
+        # to print in logs, take first 50 chars from response json body
+        # (if None, keep None)
         response_data_json = response_data["json_body"]
-        if len(response_data_json) <= 50:
-            short_response_data = response_data_json
+        if response_data_json is not None:
+            if len(response_data_json) <= 50:
+                short_response_data = response_data_json
+            else:
+                short_response_data = response_data_json[:50]
         else:
-            short_response_data = response_data_json[:50]
+            short_response_data = None
 
         # log to console (or file), using loguru
         logger.log("API", "Request at <w>{}</> with id <m>{}</> (ip <m>{}</>)",

@@ -78,24 +78,34 @@ async def unpack_response(call_next, request, request_id: str) -> dict:
     response = await request_execute(call_next, request, request_id)
     finish_time = time.perf_counter()
 
-    # [TODO: fix when response is none cuz of error in request_execute]
-    overall_status = "successful" if response.status_code < 400 else "failed"
-    execution_time = finish_time - start_time
+    if response is not None:
+        overall_status = "successful" if response.status_code < 400 else "failed"
+        execution_time = finish_time - start_time
 
-    response_data = {
-        "status": overall_status,
-        "status_code": response.status_code,
-        "time_taken": execution_time
-    }
+        response_data = {
+            "status": overall_status,
+            "status_code": response.status_code,
+            "time_taken": execution_time
+        }
 
-    resp_body = [section async for section in response.__dict__["body_iterator"]]
-    response.__setattr__("body_iterator", AsyncIteratorWrapper(resp_body))
+        resp_body = [section async for section in response.__dict__["body_iterator"]]
+        response.__setattr__("body_iterator", AsyncIteratorWrapper(resp_body))
 
-    try:
-        resp_body = json.loads(resp_body[0].decode())
-    except:
-        resp_body = str(resp_body)
+        try:
+            resp_body = json.loads(resp_body[0].decode())
+        except:
+            resp_body = str(resp_body)
 
-    response_data["json_body"] = resp_body
+        response_data["json_body"] = resp_body
+
+    else:
+        execution_time = finish_time - start_time
+
+        response_data = {
+            "status": None,
+            "status_code": None,
+            "time_taken": execution_time,
+            "json_body": None
+        }
 
     return response, response_data

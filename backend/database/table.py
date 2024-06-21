@@ -51,7 +51,7 @@ class ApiResponse(SQLModel, table=True):
 
     id: int | None = Field(default=None, primary_key=True)
     request_id: str
-    status: str
-    status_code: int
+    status: str | None = None  # none if server error while responding
+    status_code: int | None = None  # none if server error while responding
     time_taken: int
     json_body: str | None = None

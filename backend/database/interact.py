@@ -148,7 +148,7 @@ def get_leaderboard_vars(session, filters: list[int|None]) -> list[tuple]:
 
             n = get_level_play_count(session, level_name, filters)
             results.append({
-                "players": list(player),
+                "players": player,
                 "level": level_name, 
                 "n": n
             })
