@@ -18,7 +18,7 @@ def get_router(session) -> APIRouter:
     router = APIRouter()
 
     @router.get("/get_leaderboard_data/", tags=["leaderboards"])
-    def get_scores(
+    def get_leaderboard_data(
         era: Optional[int] = None,
         mode: Optional[int] = None
     ):

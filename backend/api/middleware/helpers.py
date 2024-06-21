@@ -42,7 +42,7 @@ async def request_execute(call_next, request, request_id: str):
             "method": request.method,
             "reason": e
         }
-        logger.opt(exception=True).error(
+        logger.opt(exception=True, colors=True).error(
             "Got error on executing request: <w>{}</>", details)
 
 

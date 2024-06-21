@@ -124,11 +124,23 @@ def get_level_play_count(session, level: str,
     era, mode = filters
     logger.trace("filters: <w>{}</>", filters)
 
-    return 1
+    full_query = session.query(Score).distinct(Score.username1,
+                                               Score.username2,
+                                               Score.level)
+    if era is not None:
+        full_query = full_query.where(Score.era == era)
+    if mode is not None:
+        full_query = full_query.where(Score.mode == mode)
+
+    full_query = full_query.where(Score.level == level)
+
+    return full_query.count()
 
 
 # [TODO: make mode filter work]
 # [TODO: optimizations (i.e. call cache results of get_level_play_count)]
+# [TODO: fix up multiplayer?]
+# [TODO: add r variable]
 def get_leaderboard_vars(session, filters: list[int|None]) -> list[tuple]:
     """Get variables (N, R, etc) for leaderboards"""
     logger.debug("Getting leaderboard variables..")
@@ -148,7 +160,7 @@ def get_leaderboard_vars(session, filters: list[int|None]) -> list[tuple]:
 
             n = get_level_play_count(session, level_name, filters)
             results.append({
-                "players": player,
+                "players": list(player),
                 "level": level_name, 
                 "n": n
             })
