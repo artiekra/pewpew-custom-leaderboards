@@ -1,4 +1,8 @@
 {
+  "logs": {
+    "print_logs": true,
+    "log_level": "TRACE"
+  },
   "database": {
     "file": "data.db",
     "config": {

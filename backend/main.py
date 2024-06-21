@@ -1,5 +1,7 @@
 """Backend entry point"""
 
+import sys
+
 import orjson
 import uvicorn
 
@@ -13,6 +15,11 @@ logger = logger.opt(colors=True)
 def main(backend_config: dict) -> None:
     """Run FastAPI on uvicorn server"""
     logger.info("Launching uvicorn on 0.0.0.0:8000.. (app: FastAPI)")
+
+    # [TODO: make print_logs affect logs at the start an uvicorn logs too]
+    logger.remove(0)
+    if backend_config["logs"]["print_logs"]:
+        logger.add(sys.stderr, level=backend_config["logs"]["log_level"])
 
     app = get_app(backend_config)
 
