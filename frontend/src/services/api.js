@@ -12,7 +12,7 @@ export const fetchData = async (baseURL) => {
         }
         
         const data = await response.json();
-        return data["result"];
+        return data["response"];
     } catch (error) {
         console.log('Error fetching data:', error);
         throw error;
