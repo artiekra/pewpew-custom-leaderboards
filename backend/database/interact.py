@@ -11,6 +11,7 @@ from database.query import QUERIES
 logger = logger.opt(colors=True)
 
 
+# [TODO: optimizing commits]
 def insert_score(session, score: Score) -> None:
     """Insert data about a certain score into "score" table"""
     logger.debug("Adding a score: <w>{}</>", repr(score))
