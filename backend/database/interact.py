@@ -116,11 +116,41 @@ def get_players(session, era: int|None) -> list[tuple]:
     return result
 
 
+def get_level_play_count(session, level: str,
+                         filters: list[int|None]) -> int:
+    """Get the amount of times a particular level was played"""
+    logger.debug("Getting level play count for <m>{}</>", level)
+
+    era, mode = filters
+    logger.trace("filters: <w>{}</>", filters)
+
+    return 1
+
+
+# [TODO: make mode filter work]
+# [TODO: optimizations (i.e. call cache results of get_level_play_count)]
 def get_leaderboard_vars(session, filters: list[int|None]) -> list[tuple]:
     """Get variables (N, R, etc) for leaderboards"""
     logger.debug("Getting leaderboard variables..")
 
     era, mode = filters
-    logger.trace("Filters: <w>{}</>", filters)
+    logger.trace("filters: <w>{}</>", filters)
 
-    return None
+    players = get_players(session, era)
+    
+    results = []
+    for player in players:
+        levels = get_player_latest(session, player[0], [era, None])
+
+        # pb - personal best
+        for pb in levels:
+            level_name = pb.level
+
+            n = get_level_play_count(session, level_name, filters)
+            results.append({
+                "players": list(player),
+                "level": level_name, 
+                "n": n
+            })
+
+    return results
