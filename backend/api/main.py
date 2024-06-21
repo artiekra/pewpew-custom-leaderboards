@@ -8,7 +8,7 @@ from database.connect import main as db_connect
 
 from api.methods.metadata import API_TAGS_METADATA, API_DESCRIPTION
 from api.methods.scores import get_router as get_router_scores
-# from api.cached import get_router as get_router_cached
+from api.methods.leaderboards import get_router as get_router_leaderboards
 from api.methods.update import get_router as get_router_update
 from api.methods.parse import router as api_parse_router
 
@@ -51,7 +51,7 @@ def get_app(config: dict) -> FastAPI:
     add_middleware(app, session)
 
     include_router_v1(app, get_router_scores(session), "scores")
-    # app.include_router(get_router_cached(db_con))
+    include_router_v1(app, get_router_leaderboards(session), "leaderboards")
     include_router_v1(app, api_parse_router, "parse")
     include_router_v1(app, get_router_update(session), "update")
 

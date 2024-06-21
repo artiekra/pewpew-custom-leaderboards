@@ -116,9 +116,11 @@ def get_players(session, era: int|None) -> list[tuple]:
     return result
 
 
-# def get_leaderboard_vars(session, filters: list[int|None]) -> list[tuple]:
-#     """Get variables (N, R, etc) for leaderboards"""
-#     logger.debug("Getting leaderboard variables..")
-#
-#     era, mode = filters
-#     logger.trace("Filters: <w>{}</>", filters)
+def get_leaderboard_vars(session, filters: list[int|None]) -> list[tuple]:
+    """Get variables (N, R, etc) for leaderboards"""
+    logger.debug("Getting leaderboard variables..")
+
+    era, mode = filters
+    logger.trace("Filters: <w>{}</>", filters)
+
+    return None

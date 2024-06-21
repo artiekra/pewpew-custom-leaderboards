@@ -7,10 +7,11 @@ API_TAGS_METADATA = [
         "name": "scores",
         "description": "Get raw data from the database on player/level scores",
     },
-    # {
-    #     "name": "cached",
-    #     "description": "Access cached data from calculations for the leaderboard",
-    # },
+    {
+        "name": "leaderboards",
+        "description": """Access cached data from calculations for the leaderboard
+            (vars like N and R)""",
+    },
     {
         "name": "parse",
         "description": "Parse message from #scores-feed in Discord server",
