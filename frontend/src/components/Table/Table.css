@@ -24,3 +24,8 @@ thead th {
 tbody tr:nth-child(odd) {
     background-color: #9b9cff;
 }
+
+h2 {
+    display: flex;
+    justify-content: center;
+}

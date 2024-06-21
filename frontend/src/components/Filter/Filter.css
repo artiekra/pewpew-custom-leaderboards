@@ -1,0 +1,37 @@
+.filter {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.filter-form {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+}
+
+.filter-form label {
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.filter-form input[type="date"],
+.filter-form select,
+.filter-form input[type="submit"] {
+    margin-right: 10px;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: inherit;
+}
+
+.filter-form input[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.filter-form input[type="submit"]:hover {
+    background-color: #45a049;
+}

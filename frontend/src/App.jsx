@@ -1,15 +1,22 @@
-import { useState, useEffect } from 'react';
-import Table from './components/Table/Table';
-import { fetchData } from './services/api';
+import { useState, useEffect } from 'react'
+import Table from './components/Table/Table'
+import Filter from './components/Filter/Filter'
+import { fetchData } from './services/api'
 
 const App = () => {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(0);
+  const [filters, setFilters] = useState({ timestampStart: null, timestampEnd: null, era: 2 });
 
   useEffect(() => {
     const fetchDataAndLog = async () => {
       try {
-        const result = await fetchData(`http://localhost:8000/v1/scores/get_scores/?page=${page}&limit=45`);
+        const { timestampStart, timestampEnd, era } = filters;
+        let url = `http://localhost:8000/v1/scores/get_scores/?page=${page}&limit=45`;
+        if (timestampStart && timestampEnd && era !== null) {
+          url += `&timestamp_start=${timestampStart}&timestamp_end=${timestampEnd}&era=${era}`;
+        }
+        const result = await fetchData(url);
         if (page === 0) {
           setData(result);
         } else {
@@ -21,7 +28,7 @@ const App = () => {
     };
 
     fetchDataAndLog();
-  }, [page]);
+  }, [page, filters]);
 
   useEffect(() => {
     let fetching = false;
@@ -46,10 +53,16 @@ const App = () => {
     return () => {
       window.removeEventListener('scroll', onScroll);
     };
-  }, [page]);
+  }, []);
+
+  const handleFilterSubmit = ({ timestampStart, timestampEnd, era }) => {
+    setFilters({ timestampStart, timestampEnd, era });
+    setPage(0);
+  };
 
   return (
     <div>
+      <Filter onSubmit={handleFilterSubmit} />
       <Table data={data} />
     </div>
   );
