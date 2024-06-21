@@ -15,7 +15,7 @@ from database.table import ApiRequest
 logger = logger.opt(colors=True)
 
 
-# [TODO: log responce, not just request]
+# [TODO: log response, not just request]
 # [TODO: consider adding X-API-REQUEST-ID]
 class LoggingMiddleware(BaseHTTPMiddleware):
 

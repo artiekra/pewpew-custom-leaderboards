@@ -20,7 +20,7 @@ def parse_score(message: str):
     Pass JUST the message WITH formatting IN MARKDOWN."""
     parsed = parser_parse_score(message)
 
-    return {"responce": parsed}
+    return {"response": parsed}
 
 
 @router.post("/apply_regex/", tags=["parse"])
@@ -30,7 +30,7 @@ def apply_regex_to_score(message: str):
     Pass JUST the message WITH formatting IN MARKDOWN."""
     parsed = apply_regex_raw(message)
 
-    return {"responce": parsed}
+    return {"response": parsed}
 
 
 @router.post("/parse_platform/", tags=["parse"])
@@ -40,4 +40,4 @@ def parse_platform(message: str):
     (e - uknown by parser, u - uknown by #scores-feed)"""
     parsed = parser_parse_platform(message)
 
-    return {"responce": parsed}
+    return {"response": parsed}

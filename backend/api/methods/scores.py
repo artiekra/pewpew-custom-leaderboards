@@ -29,7 +29,7 @@ def get_router(session) -> APIRouter:
         results, metadata = dbi.get_scores(session, page, limit, [timestamp_start,
             timestamp_end, era])
 
-        return {"responce": results, "metadata": metadata}
+        return {"response": results, "metadata": metadata}
 
 
     @router.get("/get_latest_player_scores/", tags=["scores"])
@@ -41,7 +41,7 @@ def get_router(session) -> APIRouter:
         """Get all latest scores for each level (given the player)"""
         results = dbi.get_player_latest(session, player, [era, mode])
 
-        return {"responce": results, "metadata": None}
+        return {"response": results, "metadata": None}
 
 
     return router

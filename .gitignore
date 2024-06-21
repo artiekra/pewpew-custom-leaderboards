@@ -3,6 +3,8 @@
 */*.db
 *.db
 export/
+*/*.db-journal
+*.db-journal
 
 
 # Created by https://www.toptal.com/developers/gitignore/api/python,flask,venv
