@@ -35,7 +35,23 @@ class ApiRequest(SQLModel, table=True):
     """Class to represent API request (for logging into database)"""
 
     id: int | None = Field(default=None, primary_key=True)
+    request_id: str
     method: str
     path: str
-    ip: str | None = None  # seems to always be available.. privacy tho?
+
+    # seems to always be available.. privacy tho?
+    # its frontend's ip anyway tho..
+    ip: str | None = None
+
+    json_body: str | None = None
+
+
+class ApiResponse(SQLModel, table=True):
+    """Class to represent API response (for logging into database)"""
+
+    id: int | None = Field(default=None, primary_key=True)
+    request_id: str
+    status: str
+    status_code: int
+    time_taken: int
     json_body: str | None = None
