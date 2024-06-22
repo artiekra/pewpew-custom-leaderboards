@@ -13,7 +13,7 @@ def apply_regex_raw(msg: str):
     """Apply regex without any post-processing done"""
     logger.trace("Applying regex (raw) to <w>{}</>", msg)
 
-    regex_string = r"(`[^`]*`)|(\([^\(]*\))|(\d+)|\S+"
+    regex_string = r"(`[^`]*`)|(\([^\(]*\))|(-?\d+)|\S+"
     rx = re.compile(regex_string)
 
     msg_split = rx.findall(msg)
