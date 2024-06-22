@@ -18,6 +18,7 @@ def insert_score(session, score: Score) -> None:
 
     session.add(score)
 
+    # [TODO: check if the new score is smaller then the old one?..]
     main_query = select(Leaderboard). \
         where(Leaderboard.username1 == score.username1). \
         where(Leaderboard.username2 == score.username2). \
