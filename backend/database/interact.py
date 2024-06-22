@@ -138,10 +138,27 @@ def get_level_play_count(session, level: str,
     return full_query.count()
 
 
+def get_player_rank(session, level: str, player: str) -> int:
+    """Get player's rank in global leaderboards for a certain level
+    Only works for singleplayer calculations."""
+    logger.debug("Getting rank for <m>{}</> in <m>{}</>", player, level)
+
+    query = select(Score).order_by(Score.timestamp.desc()) \
+        .where(Score.level == level).where(Score.mode == 0)
+
+    result = session.exec(query.group_by(Score.username1)).all()
+
+    result_collapsed = [x.username1 for x in result]
+
+    # adjust to 1-based indexing (ranks), so +1 here
+    if player in result_collapsed:
+        return result_collapsed.index(player) + 1
+    return None
+
+
 # [TODO: make mode filter work]
 # [TODO: optimizations (i.e. call cache results of get_level_play_count)]
 # [TODO: fix up multiplayer?]
-# [TODO: add r variable]
 def get_leaderboard_vars(session, filters: list[int|None]) -> list[tuple]:
     """Get variables (N, R, etc) for leaderboards"""
     logger.debug("Getting leaderboard variables..")
@@ -160,10 +177,12 @@ def get_leaderboard_vars(session, filters: list[int|None]) -> list[tuple]:
             level_name = pb.level
 
             n = get_level_play_count(session, level_name, filters)
+            r = get_player_rank(session, level_name, player[0])
             results.append({
                 "players": list(player),
                 "level": level_name, 
-                "n": n
+                "n": n,
+                "r": r
             })
 
     return results
