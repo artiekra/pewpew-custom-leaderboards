@@ -33,7 +33,16 @@ const Filter = ({ onSubmit }) => {
                     <option value="2">2</option>
                 </select>
 
-                <input type="submit" value="Apply" />
+                <button type="submit" id='submitBtn'>
+                    <svg width="140" height="50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 50" preserveAspectRatio="xMidYMid meet">
+                        <rect x="5" y="40" width="5" height="5" fill="none" stroke="rgb(19, 65, 150)" strokeWidth="2" />
+                        <rect x="180" y="5" width="5" height="5" fill="none" stroke="rgb(19, 65, 150)" strokeWidth="2" />
+                        <line x1="1" y1="12" x2="12" y2="1" stroke="rgb(19, 65, 150)" strokeWidth="2" />
+                        <line x1="179" y1="49" x2="190" y2="37" stroke="rgb(19, 65, 150)" strokeWidth="2" />
+                        <polygon points="20,0 190,0 190,30 172,50 0,50 0,40 0,20" fill="none" stroke="rgb(19, 65, 150)" strokeWidth="3"/>
+                        <text className='text' x="50%" y="50%" textAnchor="middle" fill="white" dy=".3em" fontSize="27">Apply</text>
+                    </svg>
+                </button>
             </form>
         </div>
     );

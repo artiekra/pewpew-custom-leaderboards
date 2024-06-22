@@ -31,7 +31,7 @@ py main.py
 # prepare
 You need node modules with yarn dependencies
 
-#run
+# run
 npx vite
 
 ```
