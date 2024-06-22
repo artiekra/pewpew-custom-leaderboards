@@ -3,7 +3,7 @@
 from sqlalchemy import text
 
 from loguru import logger
-from sqlmodel import select, distinct, func
+from sqlmodel import Session, select, distinct, func
 
 from database.table import Score, Leaderboard
 from database.query import QUERIES
@@ -12,59 +12,59 @@ logger = logger.opt(colors=True)
 
 
 # [TODO: optimizing commits]
-def insert_score(session, score: Score) -> None:
+def insert_score(engine, score: Score) -> None:
     """Insert data about a certain score into "score" table"""
     logger.debug("Adding a score: <w>{}</>", repr(score))
 
-    session.add(score)
+    with Session(engine) as session:
 
-    # [TODO: check if the new score is smaller then the old one?..]
-    main_query = select(Leaderboard). \
-        where(Leaderboard.username1 == score.username1). \
-        where(Leaderboard.username2 == score.username2). \
-        where(Leaderboard.level == score.level). \
-        where(Leaderboard.era == score.era)
-    results = session.exec(main_query).all()
-    if len(results) == 0:
-        leaderboard_entry = Leaderboard(**dict(score))
-        leaderboard_entry.id = None  # dont take id from score, autoincrement
-        session.add(leaderboard_entry)
-    else:
-        leaderboard_entry = results[0]
+        session.add(score)
 
-        leaderboard_entry.timestamp = score.timestamp
-        leaderboard_entry.score = score.score
-        leaderboard_entry.country = score.country
-        leaderboard_entry.platform = score.platform
-        leaderboard_entry.mode = score.mode
+        # [TODO: check if the new score is smaller then the old one?..]
+        main_query = select(Leaderboard). \
+            where(Leaderboard.username1 == score.username1). \
+            where(Leaderboard.username2 == score.username2). \
+            where(Leaderboard.level == score.level). \
+            where(Leaderboard.era == score.era)
+        results = session.exec(main_query).all()
+        if len(results) == 0:
+            leaderboard_entry = Leaderboard(**dict(score))
+            leaderboard_entry.id = None  # dont take id from score, autoincrement
+            session.add(leaderboard_entry)
+        else:
+            leaderboard_entry = results[0]
 
-        session.add(leaderboard_entry)
+            leaderboard_entry.timestamp = score.timestamp
+            leaderboard_entry.score = score.score
+            leaderboard_entry.country = score.country
+            leaderboard_entry.platform = score.platform
+            leaderboard_entry.mode = score.mode
 
-    session.commit()
+            session.add(leaderboard_entry)
 
 
-def update_score(session, score_id: int, score: Score) -> None:
+def update_score(engine, score_id: int, score: Score) -> None:
     """Update data about a certain score in the "score" table"""
     logger.debug("Updating a score (id <m>{}</>): <w>{}</>",
                  score_id, repr(score))
 
-    db_score = session.get(Score, score_id)
-    db_score.sqlmodel_update(score)
-    session.add(db_score)
-    session.commit()
+    with Session(engine) as session:
+        db_score = session.get(Score, score_id)
+        db_score.sqlmodel_update(score)
+        session.add(db_score)
 
 
-def delete_score(session, score_id: int) -> None:
+def delete_score(engine, score_id: int) -> None:
     """Delete data about a certain score from"score" table,
     given the id"""
     logger.debug("Deleting score with id <m>{}</>", score_id)
 
-    score = session.get(Score, score_id)
-    session.delete(score)
-    session.commit()
+    with Session(engine) as session:
+        score = session.get(Score, score_id)
+        session.delete(score)
 
 
-def get_scores(session, page: int, limit: int,
+def get_scores(engine, page: int, limit: int,
             filters: list[int|None]) -> list[tuple]:
     """Get all available in the database data"""
     logger.debug("Getting everything from the database..")
@@ -72,26 +72,28 @@ def get_scores(session, page: int, limit: int,
     timestamp_start, timestamp_end, era = filters
     logger.trace("Filters: <w>{}</>", filters)
 
-    # [TODO: page-based pagination exists as built-in? maybe?]
-    # [TODO: optimize code? dry?]
-    main_query = select(Score).offset(page*limit).limit(limit)
-    count_query = session.query(Score)
-    count = count_query.count()
+    with Session(engine) as session:
 
-    if era is not None:
-        main_query = main_query.where(Score.era == era)
-        count_query = count_query.where(Score.era == era)
-    if timestamp_start is not None:
-        main_query = main_query.where(timestamp_start <= Score.timestamp)
-        count_query = count_query.where(timestamp_start <= Score.timestamp)
-    if timestamp_end is not None:
-        main_query = main_query.where(Score.timestamp <= timestamp_end)
-        count_query = count_query.where(Score.timestamp <= timestamp_end)
+        # [TODO: page-based pagination exists as built-in? maybe?]
+        # [TODO: optimize code? dry?]
+        main_query = select(Score).offset(page*limit).limit(limit)
+        count_query = session.query(Score)
+        count = count_query.count()
 
-    # [TODO: use select(id) and count primary keys only for efficiency]
-    count_filtered = count_query.count()
+        if era is not None:
+            main_query = main_query.where(Score.era == era)
+            count_query = count_query.where(Score.era == era)
+        if timestamp_start is not None:
+            main_query = main_query.where(timestamp_start <= Score.timestamp)
+            count_query = count_query.where(timestamp_start <= Score.timestamp)
+        if timestamp_end is not None:
+            main_query = main_query.where(Score.timestamp <= timestamp_end)
+            count_query = count_query.where(Score.timestamp <= timestamp_end)
 
-    result = session.exec(main_query).all()
+        # [TODO: use select(id) and count primary keys only for efficiency]
+        count_filtered = count_query.count()
+
+        result = session.exec(main_query).all()
 
     metadata = {
         "item_count": count,
@@ -101,7 +103,7 @@ def get_scores(session, page: int, limit: int,
     return result, metadata
 
 
-def get_player_latest(session, player: str,
+def get_player_latest(engine, player: str,
                       filters: list[int|None]) -> list[tuple]:
     """Get all latest player scores in the database data"""
     logger.debug("Getting latest player (<m>{}</>) scores from the database..",
@@ -110,20 +112,21 @@ def get_player_latest(session, player: str,
     era, mode = filters
     logger.trace("Filters: <w>{}</>", filters)
 
-    query = select(Score).order_by(Score.timestamp.desc()) \
-        .where((Score.username1 == player) | (Score.username2 == player))
+    query = select(Leaderboard). \
+        where((Score.username1 == player) | (Score.username2 == player))
     if era is not None:
         query = query.where(Score.era == era)
     if mode is not None:
         query = query.where(Score.mode == mode)
 
-    result = session.exec(query.group_by(Score.level)).all()
+    with Session(engine) as session:
+        result = session.exec(query).all()
 
     return result
 
 
 # [TODO: add metadata]
-def get_players(session, era: int|None) -> list[tuple]:
+def get_players(engine, era: int|None) -> list[tuple]:
     """Get all the players available in the database"""
     logger.debug("Getting all the player pairs from the database, era <m>{}</>",
                  era)
@@ -132,15 +135,14 @@ def get_players(session, era: int|None) -> list[tuple]:
     if era is not None:
         full_query = full_query.where(Score.era == era)
 
-    result = session.exec(full_query.group_by(Score.username1,
-        Score.username2)).all()
-
-    print(result)
+    with Session(engine) as session:
+        result = session.exec(full_query.group_by(Score.username1,
+            Score.username2)).all()
 
     return result
 
 
-def get_level_play_count(session, level: str,
+def get_level_play_count(engine, level: str,
                          filters: list[int|None]) -> int:
     """Get the amount of times a particular level was played"""
     logger.debug("Getting level play count for <m>{}</>", level)
@@ -148,20 +150,22 @@ def get_level_play_count(session, level: str,
     era, mode = filters
     logger.trace("filters: <w>{}</>", filters)
 
-    full_query = session.query(Score).distinct(Score.username1,
-                                               Score.username2,
-                                               Score.level)
-    if era is not None:
-        full_query = full_query.where(Score.era == era)
-    if mode is not None:
-        full_query = full_query.where(Score.mode == mode)
+    with Session(engine) as session:
 
-    full_query = full_query.where(Score.level == level)
+        full_query = session.query(Score).distinct(Score.username1,
+                                                   Score.username2,
+                                                   Score.level)
+        if era is not None:
+            full_query = full_query.where(Score.era == era)
+        if mode is not None:
+            full_query = full_query.where(Score.mode == mode)
 
-    return full_query.count()
+        full_query = full_query.where(Score.level == level)
+
+        return full_query.count()
 
 
-def get_player_rank(session, level: str, player: str) -> int:
+def get_player_rank(engine, level: str, player: str) -> int:
     """Get player's rank in global leaderboards for a certain level
     Only works for singleplayer calculations."""
     logger.debug("Getting rank for <m>{}</> in <m>{}</>", player, level)
@@ -169,7 +173,8 @@ def get_player_rank(session, level: str, player: str) -> int:
     query = select(Score).order_by(Score.timestamp.desc()) \
         .where(Score.level == level).where(Score.mode == 0)
 
-    result = session.exec(query.group_by(Score.username1)).all()
+    with Session(engine) as session:
+        result = session.exec(query.group_by(Score.username1)).all()
 
     result_collapsed = [x.username1 for x in result]
 
@@ -182,30 +187,33 @@ def get_player_rank(session, level: str, player: str) -> int:
 # [TODO: make mode filter work]
 # [TODO: optimizations (i.e. call cache results of get_level_play_count)]
 # [TODO: fix up multiplayer?]
-def get_leaderboard_vars(session, filters: list[int|None]) -> list[tuple]:
+# [TODO: split across several funcs?]
+def get_leaderboard_vars(engine, filters: list[int|None]) -> list[tuple]:
     """Get variables (N, R, etc) for leaderboards"""
     logger.debug("Getting leaderboard variables..")
 
     era, mode = filters
     logger.trace("filters: <w>{}</>", filters)
 
-    players = get_players(session, era)
-    
-    results = []
-    for player in players:
-        levels = get_player_latest(session, player[0], [era, None])
+    with Session(engine) as session:
 
-        # pb - personal best
-        for pb in levels:
-            level_name = pb.level
+        players = get_players(session, era)
+        
+        results = []
+        for player in players:
+            levels = get_player_latest(session, player[0], [era, None])
 
-            n = get_level_play_count(session, level_name, filters)
-            r = get_player_rank(session, level_name, player[0])
-            results.append({
-                "players": list(player),
-                "level": level_name, 
-                "n": n,
-                "r": r
-            })
+            # pb - personal best
+            for pb in levels:
+                level_name = pb.level
 
-    return results
+                n = get_level_play_count(session, level_name, filters)
+                r = get_player_rank(session, level_name, player[0])
+                results.append({
+                    "players": list(player),
+                    "level": level_name, 
+                    "n": n,
+                    "r": r
+                })
+
+        return results

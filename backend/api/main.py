@@ -37,7 +37,7 @@ def get_app(config: dict) -> FastAPI:
     logger.debug("Creating FastAPI app..")
 
     is_echo = config["database"]["config"]["echo"]
-    session = db_connect(config["database"]["file"], is_echo)
+    engine = db_connect(config["database"]["file"], is_echo)
 
     # custom logging (loguru) method for API-specific stuff
     # debug 10, info 20, error 40
@@ -48,11 +48,11 @@ def get_app(config: dict) -> FastAPI:
         "name": "Apache 2.0"
     })
 
-    add_middleware(app, session)
+    add_middleware(app, engine)
 
-    include_router_v1(app, get_router_scores(session), "scores")
-    include_router_v1(app, get_router_leaderboards(session), "leaderboards")
+    include_router_v1(app, get_router_scores(engine), "scores")
+    include_router_v1(app, get_router_leaderboards(engine), "leaderboards")
     include_router_v1(app, api_parse_router, "parse")
-    include_router_v1(app, get_router_update(session), "update")
+    include_router_v1(app, get_router_update(engine), "update")
 
     return app

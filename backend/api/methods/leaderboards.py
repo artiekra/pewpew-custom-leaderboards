@@ -11,7 +11,7 @@ import database.interact as dbi
 logger = logger.opt(colors=True)
 
 
-def get_router(session) -> APIRouter:
+def get_router(engine) -> APIRouter:
     """Create FastAPI router, given database connection"""
     logger.trace("Creating FastAPI router for score methods")
 
@@ -23,7 +23,7 @@ def get_router(session) -> APIRouter:
         mode: Optional[int] = None
     ):
         """Get leaderboard data (variables for each player-level pair)"""
-        results = dbi.get_leaderboard_vars(session, [era, mode])
+        results = dbi.get_leaderboard_vars(engine, [era, mode])
 
         return {"response": results, "metadata": None}
 

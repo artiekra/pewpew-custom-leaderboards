@@ -29,11 +29,11 @@ def add_cors(app: FastAPI) -> None:
 
 
 #[TODO: add RateLimitingMiddleware (for public methods)]
-def add_middleware(app: FastAPI, session) -> None:
+def add_middleware(app: FastAPI, engine) -> None:
     """Adds all the middleware to a given FastAPI app"""
     logger.debug("Adding available middleware to the app..")
 
     add_cors(app)
 
-    app.add_middleware(LoggingMiddleware, session=session)
+    app.add_middleware(LoggingMiddleware, engine=engine)
     app.add_middleware(GZipMiddleware, minimum_size=1000)  # default min 500

@@ -12,7 +12,7 @@ from database.table import ScoreCreate, Score
 logger = logger.opt(colors=True)
 
 
-def get_router(session) -> APIRouter:
+def get_router(engine) -> APIRouter:
     """Create FastAPI router, given database connection"""
     logger.trace("Creating FastAPI router for update methods")
 
@@ -25,7 +25,7 @@ def get_router(session) -> APIRouter:
         score_data = score.model_dump(exclude_unset=True)
         new_score = Score(**score_data)
 
-        dbi.insert_score(session, new_score)
+        dbi.insert_score(engine, new_score)
 
 
     # [TODO: fix]
@@ -36,14 +36,14 @@ def get_router(session) -> APIRouter:
         score_data = score.model_dump(exclude_unset=True)
         new_score = Score(**score_data)
 
-        dbi.update_score(session, id, new_score)
+        dbi.update_score(engine, id, new_score)
 
 
     # [TODO: make it also affect the leaderboards]
     @router.delete("/delete_score/", tags=["update"])
     def delete_score(id: int):
         """Delete a particular score from the database"""
-        dbi.delete_score(session, id)
+        dbi.delete_score(engine, id)
 
 
     return router

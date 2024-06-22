@@ -1,6 +1,6 @@
 """Connecting/setting up the database (SQLite)"""
 
-from sqlmodel import SQLModel, Session, create_engine
+from sqlmodel import SQLModel, create_engine
 
 from database.table import Score
 
@@ -28,6 +28,4 @@ def main(db_file: str, is_echo: bool = False) -> None:
     logger.info("Creating missing tables..")
     SQLModel.metadata.create_all(engine)
 
-    session = Session(engine)
-
-    return session
+    return engine

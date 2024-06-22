@@ -11,7 +11,7 @@ import database.interact as dbi
 logger = logger.opt(colors=True)
 
 
-def get_router(session) -> APIRouter:
+def get_router(engine) -> APIRouter:
     """Create FastAPI router, given database connection"""
     logger.trace("Creating FastAPI router for score methods")
 
@@ -27,7 +27,7 @@ def get_router(session) -> APIRouter:
         era: Optional[int] = None,
     ):
         """Get all available records for a particular time period"""
-        results, metadata = dbi.get_scores(session, page, limit, [timestamp_start,
+        results, metadata = dbi.get_scores(engine, page, limit, [timestamp_start,
             timestamp_end, era])
 
         return {"response": results, "metadata": metadata}
@@ -40,7 +40,7 @@ def get_router(session) -> APIRouter:
         mode: Optional[int] = None
     ):
         """Get all latest scores for each level (given the player)"""
-        results = dbi.get_player_latest(session, player, [era, mode])
+        results = dbi.get_player_latest(engine, player, [era, mode])
 
         return {"response": results, "metadata": None}
 
@@ -50,7 +50,7 @@ def get_router(session) -> APIRouter:
         era: Optional[int] = None
     ):
         """Get all the players, available in the database"""
-        results = dbi.get_players(session, era)
+        results = dbi.get_players(engine, era)
 
         results = [list(x) for x in results]
 

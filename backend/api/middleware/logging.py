@@ -8,6 +8,7 @@ from uuid import uuid4
 from loguru import logger
 
 from fastapi import FastAPI
+from sqlmodel import Session
 from fastapi import Request, Response  # for typing
 from starlette.middleware.base import BaseHTTPMiddleware
 
@@ -21,8 +22,8 @@ logger = logger.opt(colors=True)
 # [TODO: better way to handle server error (now response=None)]
 class LoggingMiddleware(BaseHTTPMiddleware):
 
-    def __init__(self, app: FastAPI, session) -> None:
-        self.session = session
+    def __init__(self, app: FastAPI, engine) -> None:
+        self.engine = engine
         super().__init__(app)
 
     async def set_body(self, request):
@@ -66,15 +67,13 @@ class LoggingMiddleware(BaseHTTPMiddleware):
                    request_id, short_response_data)
 
         # put all the neccesarry data into database
+        with Session(self.engine) as session:
+            request_data["json_body"] = str(request_data["json_body"])
+            request_object = ApiRequest(request_id=request_id, **request_data)
+            session.add(request_object)
 
-        request_data["json_body"] = str(request_data["json_body"])
-        request_object = ApiRequest(request_id=request_id, **request_data)
-        self.session.add(request_object)
-
-        response_data["json_body"] = str(response_data["json_body"])
-        response_object = ApiResponse(request_id=request_id, **response_data)
-        self.session.add(response_object)
-
-        self.session.commit()
+            response_data["json_body"] = str(response_data["json_body"])
+            response_object = ApiResponse(request_id=request_id, **response_data)
+            session.add(response_object)
 
         return response
