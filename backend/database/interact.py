@@ -5,7 +5,7 @@ from sqlalchemy import text
 from loguru import logger
 from sqlmodel import select, distinct, func
 
-from database.table import Score
+from database.table import Score, Leaderboard
 from database.query import QUERIES
 
 logger = logger.opt(colors=True)
@@ -17,6 +17,28 @@ def insert_score(session, score: Score) -> None:
     logger.debug("Adding a score: <w>{}</>", repr(score))
 
     session.add(score)
+
+    main_query = select(Leaderboard). \
+        where(Leaderboard.username1 == score.username1). \
+        where(Leaderboard.username2 == score.username2). \
+        where(Leaderboard.level == score.level). \
+        where(Leaderboard.era == score.era)
+    results = session.exec(main_query).all()
+    if len(results) == 0:
+        leaderboard_entry = Leaderboard(**dict(score))
+        leaderboard_entry.id = None  # dont take id from score, autoincrement
+        session.add(leaderboard_entry)
+    else:
+        leaderboard_entry = results[0]
+
+        leaderboard_entry.timestamp = score.timestamp
+        leaderboard_entry.score = score.score
+        leaderboard_entry.country = score.country
+        leaderboard_entry.platform = score.platform
+        leaderboard_entry.mode = score.mode
+
+        session.add(leaderboard_entry)
+
     session.commit()
 
 

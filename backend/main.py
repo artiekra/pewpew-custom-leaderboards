@@ -27,6 +27,8 @@ def main(backend_config: dict) -> None:
 
 
 # [TODO: everywhere, type hints]
+# [TODO: everywhere, handle exceptions properly]
+# [TODO: everywhere, main_query/query, ... => statement]
 if __name__ == "__main__":
     logger.info("Starting backend...")
     with open("config.json", "r", encoding="UTF-8") as file:

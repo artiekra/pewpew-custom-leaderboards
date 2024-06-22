@@ -31,6 +31,11 @@ class ScoreCreate(ScoreBase):
     pass
 
 
+class Leaderboard(ScoreBase, table=True):
+    """Class to represent level leaderboards"""
+    id: int | None = Field(default=None, primary_key=True)
+
+
 class ApiRequest(SQLModel, table=True):
     """Class to represent API request (for logging into database)"""
 

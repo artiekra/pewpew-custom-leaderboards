@@ -29,6 +29,7 @@ def get_router(session) -> APIRouter:
 
 
     # [TODO: fix]
+    # [TODO: make it also affect the leaderboards]
     @router.put("/update_score/", tags=["update"])
     def update_score(id: int, score: ScoreCreate):
         """Update a single score in the database"""
@@ -38,6 +39,7 @@ def get_router(session) -> APIRouter:
         dbi.update_score(session, id, new_score)
 
 
+    # [TODO: make it also affect the leaderboards]
     @router.delete("/delete_score/", tags=["update"])
     def delete_score(id: int):
         """Delete a particular score from the database"""
