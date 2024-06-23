@@ -1,12 +1,9 @@
 """Interacting (add/get data) with the database (SQLite)"""
 
-from sqlalchemy import text
-
 from loguru import logger
-from sqlmodel import Session, select, distinct, func
+from sqlmodel import Session, select
 
 from database.table import Score, Leaderboard
-from database.query import QUERIES
 
 logger = logger.opt(colors=True)
 
@@ -197,28 +194,26 @@ def get_leaderboard_vars(engine, filters: list[int|None]) -> list[tuple]:
     """Get variables (N, R, etc) for leaderboards"""
     logger.debug("Getting leaderboard variables..")
 
-    era, mode = filters
+    era, _ = filters
     logger.trace("filters: <w>{}</>", filters)
 
-    with Session(engine) as session:
+    players = get_players(engine, era)
 
-        players = get_players(engine, era)
-        
-        results = []
-        for player in players:
-            levels = get_player_latest(engine, player[0], [era, None])
+    results = []
+    for player in players:
+        levels = get_player_latest(engine, player[0], [era, None])
 
-            # pb - personal best
-            for pb in levels:
-                level_name = pb.level
+        # pb - personal best
+        for pb in levels:
+            level_name = pb.level
 
-                n = get_level_play_count(engine, level_name, filters)
-                r = get_player_rank(engine, level_name, player[0])
-                results.append({
-                    "players": [pb.username1, pb.username2],
-                    "level": level_name, 
-                    "n": n,
-                    "r": r
-                })
+            n = get_level_play_count(engine, level_name, filters)
+            r = get_player_rank(engine, level_name, player[0])
+            results.append({
+                "players": [pb.username1, pb.username2],
+                "level": level_name, 
+                "n": n,
+                "r": r
+            })
 
-        return results
+    return results

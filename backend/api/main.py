@@ -2,7 +2,7 @@
 
 from loguru import logger
 from fastapi import APIRouter
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 
 from database.connect import main as db_connect
 

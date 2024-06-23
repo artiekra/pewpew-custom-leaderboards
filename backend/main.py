@@ -28,6 +28,7 @@ def main(backend_config: dict) -> None:
 
 
 # [TODO: everywhere, type hints]
+# [TODO: convert backend into a package]
 # [TODO: everywhere, handle exceptions properly]
 # [TODO: everywhere, consider changing style of how sqla queries are written]
 # [TODO: add unit tests]

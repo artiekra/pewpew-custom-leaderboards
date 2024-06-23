@@ -1,8 +1,6 @@
 """Table classes for the database"""
 
-from typing import Optional
-
-from sqlmodel import Field, SQLModel, create_engine
+from sqlmodel import Field, SQLModel
 
 # [TODO: reconsider using _timestamp, _level_, _mode]
 # [TODO: add additional validation]
@@ -13,7 +11,7 @@ class ScoreBase(SQLModel):
     era: int
     username1: str
     username2: str | None = None
-    level: str 
+    level: str
     score: int
     country: str | None = None
     platform: str | None = None
@@ -28,7 +26,6 @@ class Score(ScoreBase, table=True):
 
 class ScoreCreate(ScoreBase):
     """Class to represent scores (when creating/inserting one with api"""
-    pass
 
 
 class Leaderboard(ScoreBase, table=True):
