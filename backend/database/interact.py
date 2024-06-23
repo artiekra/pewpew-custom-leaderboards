@@ -113,11 +113,12 @@ def get_player_latest(engine, player: str,
     logger.trace("Filters: <w>{}</>", filters)
 
     query = select(Leaderboard). \
-        where((Score.username1 == player) | (Score.username2 == player))
+        where((Leaderboard.username1 == player) | \
+        (Leaderboard.username2 == player))
     if era is not None:
-        query = query.where(Score.era == era)
+        query = query.where(Leaderboard.era == era)
     if mode is not None:
-        query = query.where(Score.mode == mode)
+        query = query.where(Leaderboard.mode == mode)
 
     with Session(engine) as session:
         result = session.exec(query).all()
@@ -139,7 +140,7 @@ def get_players(engine, era: int|None) -> list[tuple]:
         result = session.exec(full_query.group_by(Score.username1,
             Score.username2)).all()
 
-    return result
+    return result[:20]
 
 
 def get_level_play_count(engine, level: str,
@@ -152,15 +153,15 @@ def get_level_play_count(engine, level: str,
 
     with Session(engine) as session:
 
-        full_query = session.query(Score).distinct(Score.username1,
-                                                   Score.username2,
-                                                   Score.level)
+        full_query = session.query(Leaderboard). \
+            distinct(Leaderboard.username1, Leaderboard.username2,
+                     Leaderboard.level)
         if era is not None:
-            full_query = full_query.where(Score.era == era)
+            full_query = full_query.where(Leaderboard.era == era)
         if mode is not None:
-            full_query = full_query.where(Score.mode == mode)
+            full_query = full_query.where(Leaderboard.mode == mode)
 
-        full_query = full_query.where(Score.level == level)
+        full_query = full_query.where(Leaderboard.level == level)
 
         return full_query.count()
 
@@ -170,11 +171,11 @@ def get_player_rank(engine, level: str, player: str) -> int:
     Only works for singleplayer calculations."""
     logger.debug("Getting rank for <m>{}</> in <m>{}</>", player, level)
 
-    query = select(Score).order_by(Score.timestamp.desc()) \
-        .where(Score.level == level).where(Score.mode == 0)
+    query = select(Leaderboard).where(Leaderboard.level == level). \
+        where(Leaderboard.mode == 0).order_by(Leaderboard.score.desc())
 
     with Session(engine) as session:
-        result = session.exec(query.group_by(Score.username1)).all()
+        result = session.exec(query).all()
 
     result_collapsed = [x.username1 for x in result]
 
@@ -197,20 +198,20 @@ def get_leaderboard_vars(engine, filters: list[int|None]) -> list[tuple]:
 
     with Session(engine) as session:
 
-        players = get_players(session, era)
+        players = get_players(engine, era)
         
         results = []
         for player in players:
-            levels = get_player_latest(session, player[0], [era, None])
+            levels = get_player_latest(engine, player[0], [era, None])
 
             # pb - personal best
             for pb in levels:
                 level_name = pb.level
 
-                n = get_level_play_count(session, level_name, filters)
-                r = get_player_rank(session, level_name, player[0])
+                n = get_level_play_count(engine, level_name, filters)
+                r = get_player_rank(engine, level_name, player[0])
                 results.append({
-                    "players": list(player),
+                    "players": [pb.username1, pb.username2],
                     "level": level_name, 
                     "n": n,
                     "r": r
