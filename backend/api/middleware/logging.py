@@ -76,4 +76,6 @@ class LoggingMiddleware(BaseHTTPMiddleware):
             response_object = ApiResponse(request_id=request_id, **response_data)
             session.add(response_object)
 
+            session.commit()
+
         return response

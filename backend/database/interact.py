@@ -42,6 +42,8 @@ def insert_score(engine, score: Score) -> None:
 
             session.add(leaderboard_entry)
 
+        session.commit()
+
 
 def update_score(engine, score_id: int, score: Score) -> None:
     """Update data about a certain score in the "score" table"""
@@ -52,6 +54,7 @@ def update_score(engine, score_id: int, score: Score) -> None:
         db_score = session.get(Score, score_id)
         db_score.sqlmodel_update(score)
         session.add(db_score)
+        session.commit()
 
 
 def delete_score(engine, score_id: int) -> None:
@@ -62,6 +65,7 @@ def delete_score(engine, score_id: int) -> None:
     with Session(engine) as session:
         score = session.get(Score, score_id)
         session.delete(score)
+        session.commit()
 
 
 def get_scores(engine, page: int, limit: int,
