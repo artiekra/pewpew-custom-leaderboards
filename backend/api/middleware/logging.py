@@ -9,7 +9,10 @@ from loguru import logger
 
 from fastapi import FastAPI
 from sqlmodel import Session
+
+from starlette.types import Message
 from fastapi import Request, Response  # for typing
+
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from api.middleware.helpers import unpack_request, unpack_response
@@ -26,24 +29,10 @@ class LoggingMiddleware(BaseHTTPMiddleware):
         self.engine = engine
         super().__init__(app)
 
-    async def set_body(self, request):
-        """Allows to get resonse body from the request"""
-
-        receive_ = await request._receive()
-
-        async def receive():
-            return receive_
-
-        request._receive = receive
-
     async def dispatch(self, request: Request, call_next: Callable):
         """Log all requests automatically (with http middleware)"""
 
         request_id = str(uuid4())
-
-        # [NOTE: awaiting set_body - doesn't work!]
-        if request.method == 'POST':
-            self.set_body(request)
 
         request_data = await unpack_request(request)
         response, response_data = await unpack_response(call_next, request,
