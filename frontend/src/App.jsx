@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Table from './components/Table/Table'
 import Filter from './components/Filter/Filter'
 import { fetchData } from './services/api'
+import './App.css'
 
 const App = () => {
   const [data, setData] = useState([]);
@@ -62,6 +63,8 @@ const App = () => {
 
   return (
     <div>
+      <h1>PewPew Live 2</h1>
+      <h1>Leaderboard</h1>
       <Filter onSubmit={handleFilterSubmit} />
       <Table data={data} />
     </div>
