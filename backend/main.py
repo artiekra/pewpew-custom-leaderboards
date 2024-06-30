@@ -28,8 +28,8 @@ def main(backend_config: dict) -> None:
 
 
 # [TODO: everywhere, type hints]
+# [TODO: convert backend into a package]
 # [TODO: everywhere, handle exceptions properly]
-# [TODO: everywhere, main_query/query, ... => statement]
 # [TODO: everywhere, consider changing style of how sqla queries are written]
 # [TODO: add unit tests]
 if __name__ == "__main__":

@@ -2,8 +2,6 @@
 
 from sqlmodel import SQLModel, create_engine
 
-from database.table import Score
-
 from loguru import logger
 
 logger = logger.opt(colors=True)
