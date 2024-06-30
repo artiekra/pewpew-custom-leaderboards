@@ -1,0 +1,105 @@
+.header {
+    width: 100%;
+    height: 55px;
+    top: 0;
+    left: 0;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background 0.3s ease;
+    z-index: 1;
+    padding: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+.nav {
+    position: absolute;
+    top: -100%;
+    left: 0;
+    width: 100%;
+    transition: transform 0.5s ease;
+    color: white;
+}
+
+.nav.open {
+    transform: translateY(20%);
+}
+
+.nav-list {
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin: 0;
+    padding: 20px;
+}
+
+
+.nav-item {
+    margin: 15px 20px;
+}
+
+.nav.open .nav-item {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.1s;
+}
+
+.svg-icon {
+    width: 160px;
+    height: 50px;
+    position: relative;
+}
+
+.svg-border {
+    stroke-dasharray: 600;
+    stroke-dashoffset: 600;
+    transition: stroke-dashoffset 0.5s ease;
+}
+
+.nav-item:hover .svg-border {
+    stroke-dashoffset: 0;
+}
+
+.svg-icon rect,
+.svg-icon line {
+    visibility: hidden;
+}
+
+.nav-item:hover .svg-icon rect,
+.nav-item:hover .svg-icon line {
+    visibility: visible;
+}
+
+.nav-toggle {
+    cursor: pointer;
+    display: flex;
+    color: #fff;
+    position: relative;
+    z-index: 2;
+    transition: background-color 0.3s ease;
+    top: -10px;
+}
+
+.navigationSvg {
+    width: 230px;
+    height: auto;
+}
+
+svg.navigationSvg:hover path {
+    fill: rgba(218, 218, 218, 0.116);
+}
+
+.nav-toggle-label {
+    margin-right: 5px;
+    font-size: 20px;
+}
+
+.hidden {
+    opacity: 0;
+    transform: translateY(-100px);
+    transition: opacity .55s ease, transform 4.5s ease;
+    pointer-events: none;
+}
